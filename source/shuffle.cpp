@@ -2,9 +2,7 @@
 
 //Durstenfeld shuffle
 void shuffle(std::array<Card, CARD_NO> cards, int seed) {
-
     srand(seed);
-
     Card temp;
     int index;
 

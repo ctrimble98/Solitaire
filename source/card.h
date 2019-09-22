@@ -1,6 +1,8 @@
-#include <cstdint>
+#ifndef CARD_H
+#define CARD_H
+
 #include <iostream>
-const uint8_t CARDS_PER_SUIT = 13;
+const int CARDS_PER_SUIT = 13;
 
 enum class Suit {
     HEARTS,
@@ -17,21 +19,24 @@ enum class Colour {
 class Card {
 public:
 
-    uint8_t getRank() const;
+    int getRank() const;
     Suit getSuit() const;
     Colour getColour() const;
     bool isFaceDown() const;
 
     Card();
-    Card(uint8_t value);
-    Card(Suit suit, uint8_t rank);
+    Card(int value);
+    Card(Suit suit, int rank);
 
+    void turnFaceDown();
     void turnFaceUp();
 
 private:
 
-    uint8_t m_rank;
+    int m_rank;
     Suit m_suit;
     Colour m_colour;
     bool m_faceDown;
 };
+
+#endif
