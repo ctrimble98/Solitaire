@@ -2,20 +2,18 @@
 
 int main(int argc, char const *argv[]) {
 
-    int cards[CARD_NO];
+    std::array<Card, CARD_NO> cards;
     for (size_t i = 0; i < CARD_NO; i++) {
-        cards[i] = i;
+        cards[i] = Card(i);
     }
     shuffle(cards, *argv[1]);
     for (size_t i = 0; i < 52; i++) {
-        printf("%d, ", cards[i]);
+        std::cout << cards[i].getRank() << ", ";
     }
-    printf("\n");
+    std::cout << std::endl;
 
-    stock = cards;
-    tableau = [STACKS];
-    
-    foundation
+    // stock = cards;
+    // tableau = [STACKS];
 
     return 0;
 }
