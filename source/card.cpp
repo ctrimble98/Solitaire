@@ -6,6 +6,8 @@ Card::Card() {
 
 Card::Card(uint8_t value) {
 
+    std::cout << value << std::endl;
+
     switch (value / CARDS_PER_SUIT) {
         case 0:
             Card(Suit::HEARTS, value % 13);
@@ -19,13 +21,13 @@ Card::Card(uint8_t value) {
 }
 
 Card::Card(Suit suit, uint8_t rank) {
-
     m_suit = suit;
     m_rank = rank;
     m_colour = (suit == Suit::HEARTS || suit == Suit::DIAMONDS) ? Colour::RED : Colour::BLACK;
 }
 
 uint8_t Card::getRank() const {
+    //std::cout << m_rank << std::endl;
     return m_rank;
 }
 

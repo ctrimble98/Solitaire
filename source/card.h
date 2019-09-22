@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <iostream>
 const uint8_t CARDS_PER_SUIT = 13;
 
 enum class Suit {
