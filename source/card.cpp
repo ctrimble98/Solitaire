@@ -63,9 +63,9 @@ void Card::turnFaceUp() {
     m_faceDown = false;
 }
 
-std::string Card::toString() const {
+std::string Card::toString(bool hideFaceDown) const {
 
-    if (m_faceDown) {
+    if (m_faceDown && hideFaceDown) {
         return "?";
     }
 

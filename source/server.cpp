@@ -18,8 +18,16 @@ int main(int argc, char const *argv[]) {
 
     Klondike game = Klondike(cards);
 
-    game.printGame();
-    game.findMoves();
+    game.printGame(true);
+    std::vector<std::array<int, 4>> moves = game.findMoves();
+    int j = 0;
+    srand(seed);
+    while (moves.size() > 0 && j < 100) {
+        game.makeMove(moves[rand() % moves.size()]);
+        game.printGame(true);
+        moves = game.findMoves();
+        j++;
+    }
 
     return 0;
 }

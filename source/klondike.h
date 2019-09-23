@@ -10,9 +10,11 @@ public:
 
     Klondike(std::array<Card, 52> cards);
 
-    void findMoves();
+    std::vector<std::array<int, 4>> findMoves();
+    void makeMove(std::array<int, 4> move);
+    void placeCards(std::array<int, 4> move, std::vector<Card> cardsToMove);
 
-    void printGame();
+    void printGame(bool hideFaceDown);
 
 private:
 

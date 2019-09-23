@@ -7,21 +7,23 @@ Klondike::Klondike(std::array<Card, CARD_NO> cards) {
         stock.push_back(cards[i]);
     }
 
+    int cardsPlaced = 0;
     for (size_t i = 0; i < STACKS; i++) {
         for (size_t j = 0; j <= i; j++) {
-            tableau[i].push_back(cards[STOCK_SIZE + i + j]);
+            tableau[i].push_back(cards[STOCK_SIZE + cardsPlaced]);
             if (j < i) {
                 tableau[i][j].turnFaceDown();
             }
+            cardsPlaced++;
         }
     }
 }
 
-void Klondike::printGame() {
+void Klondike::printGame(bool hideFaceDown) {
 
     std::cout << "Stock: [ ";
     for (auto const &card: stock) {
-        std::cout << card.toString() << ' ';
+        std::cout << card.toString(hideFaceDown) << ' ';
     }
     std::cout << "]" << std::endl;
 
@@ -30,7 +32,7 @@ void Klondike::printGame() {
     for (auto const &stack: tableau) {
         std::cout << "\t[ ";
         for (auto const &card: stack) {
-            std::cout << card.toString() << ' ';
+            std::cout << card.toString(hideFaceDown) << ' ';
         }
         std::cout << ']' << std::endl;
     }
@@ -39,7 +41,7 @@ void Klondike::printGame() {
     std::cout << "Foundation: [ ";
     for (auto &topCard: foundation) {
         if (!topCard.empty()) {
-            std::cout << topCard.top().toString() << ' ';
+            std::cout << topCard.top().toString(hideFaceDown) << ' ';
         }
         else {
             std::cout << "X ";
@@ -48,59 +50,137 @@ void Klondike::printGame() {
     std::cout << "]" << std::endl;
 }
 
-void Klondike::findMoves() {
+std::vector<std::array<int, 4>> Klondike::findMoves() {
 
-    std::vector<std::vector<Card>> moves;
+    std::vector<std::array<int, 4>> moves;
+    std::vector<std::tuple<Card, int, int>> tableauMovableCards;
+
+    for (int i = 0; i < STACKS; i++) {
+        int j = tableau[i].size() - 1;
+        while (j >= 0 && !tableau[i][j].isFaceDown()) {
+            tableauMovableCards.push_back(std::tuple<Card, int, int>(tableau[i][j], i, j));
+            j--;
+        }
+    }
+
     Card dest;
     int i = 0;
+    std::array<int, 4> tempMove;
     for (auto const &stack: tableau) {
-        moves.push_back(std::vector<Card>());
-        dest = stack.back();
-        for (auto const &stackMove: tableau) {
-            if (evalMove(dest, stackMove.back())) {
-                moves[i].push_back(stackMove.back());
+
+        if (stack.empty()) {
+
+            for (auto const &card: tableauMovableCards) {
+                if (std::get<0>(card).getRank() == HIGH_CARD_RANK) {
+                    tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + std::get<1>(card), std::get<2>(card), static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
+                    moves.push_back(tempMove);
+                }
+            }
+
+            // for (int j = 0; j < STACKS; j++) {
+            //     if (tableau[j].back().getRank() == 13) {
+            //         tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + j, tableau[j].size() - 1, static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
+            //         moves.push_back(tempMove);
+            //     }
+            // }
+
+            for (int j = 0; j < stock.size(); j++) {
+                if (stock[j].getRank() == HIGH_CARD_RANK) {
+                    tempMove = {static_cast<int>(CardLocation::STOCK), j, static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
+                    moves.push_back(tempMove);
+                }
             }
         }
+        else {
+            dest = stack.back();
 
-        for (auto const &card: stock) {
-            if (evalMove(dest, card)) {
-                moves[i].push_back(card);
+            for (auto const &card: tableauMovableCards) {
+                if (evalMove(dest, std::get<0>(card))) {
+                    tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + std::get<1>(card), std::get<2>(card), static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
+                    moves.push_back(tempMove);
+                }
+            }
+
+            // for (int j = 0; j < STACKS; j++) {
+            //     if (evalMove(dest, tableau[j].back())) {
+            //         tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + j, tableau[j].size() - 1, static_cast<int>(CardLocation::TABLEAU_START) + i, stack.size() - 1};
+            //         moves.push_back(tempMove);
+            //     }
+            // }
+
+            for (int j = 0; j < stock.size(); j++) {
+                if (evalMove(dest, stock[j])) {
+                    tempMove = {static_cast<int>(CardLocation::STOCK), j, static_cast<int>(CardLocation::TABLEAU_START) + i, stack.size() - 1};
+                    moves.push_back(tempMove);
+                }
             }
         }
-
         i++;
     }
     for (int j = 0; j < 4; j++) {
 
-        moves.push_back(std::vector<Card>());
         int target = 1;
         if (!foundation[j].empty()) {
             target = foundation[j].top().getRank() + 1;
         }
-        for (auto const &stackMove: tableau) {
-            if (static_cast<int>(stackMove.back().getSuit()) == j && stackMove.back().getRank() == target) {
-                moves[i].push_back(stackMove.back());
+        for (int k = 0; k < STACKS; k++) {
+            if (static_cast<int>(tableau[k].back().getSuit()) == j && tableau[k].back().getRank() == target) {
+                tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + k, tableau[k].size() - 1, 8, j};
+                moves.push_back(tempMove);
             }
         }
 
-        for (auto const &card: stock) {
-            if (static_cast<int>(card.getSuit()) == j && card.getRank() == target) {
-                moves[i].push_back(card);
+        for (int k = 0; k < stock.size(); k++) {
+            if (static_cast<int>(stock[k].getSuit()) == j && stock[k].getRank() == target) {
+                tempMove = {static_cast<int>(CardLocation::STOCK), k, static_cast<int>(CardLocation::FOUNDATION), j};
+                moves.push_back(tempMove);
             }
         }
 
         i++;
     }
 
-    for (auto const &validMoves: moves) {
-        for (auto const &card: validMoves) {
-            std::cout << card.toString() << ' ';
-        }
-        std::cout << validMoves.size() << std::endl;
+    for (auto const &move: moves) {
+        std::cout << "(" << move[0] << ", " << move[1] << ")" << " -> " << "(" << move[2] << ", " << move[3] << ")" << std::endl;
     }
+
+    return moves;
 }
 
 bool Klondike::evalMove(Card dest, Card pot) {
     if (dest.getColour() != pot.getColour() && dest.getRank() == (pot.getRank() + 1)) return true;
     return false;
+}
+
+void Klondike::makeMove(std::array<int, 4> move) {
+    std::vector<Card> cardsToMove;
+    switch (move[0]) {
+        case static_cast<int>(CardLocation::STOCK):
+            cardsToMove.push_back(stock[move[1]]);
+            stock.erase(stock.begin() + move[1]);
+            break;
+        default:
+            int tableauIndex = move[0] - static_cast<int>(CardLocation::TABLEAU_START);
+            if (move[1] > 0 && tableau[tableauIndex][move[1] - 1].isFaceDown()) {
+                tableau[tableauIndex][move[1] - 1].turnFaceUp();
+            }
+            for (int i = move[1]; i < tableau[tableauIndex].size(); i++) {
+                cardsToMove.push_back(tableau[tableauIndex][i]);
+            }
+            tableau[tableauIndex].erase(tableau[tableauIndex].begin() + move[1], tableau[tableauIndex].end());
+    }
+    placeCards(move, cardsToMove);
+}
+
+void Klondike::placeCards(std::array<int, 4> move, std::vector<Card> cardsToMove) {
+
+    switch (move[2]) {
+        case static_cast<int>(CardLocation::FOUNDATION):
+            foundation[move[3]].push(cardsToMove[0]);
+            break;
+        default:
+            for (auto const &card: cardsToMove) {
+                tableau[move[2] - static_cast<int>(CardLocation::TABLEAU_START)].push_back(card);
+            }
+    }
 }

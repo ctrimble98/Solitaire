@@ -33,7 +33,7 @@ public:
     void turnFaceDown();
     void turnFaceUp();
 
-    std::string toString() const;
+    std::string toString(bool hideFaceDown) const;
 
 private:
 
