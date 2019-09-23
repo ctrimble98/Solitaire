@@ -2,13 +2,15 @@
 #define CARD_H
 
 #include <iostream>
+#include <string>
+
 const int CARDS_PER_SUIT = 13;
 
 enum class Suit {
-    HEARTS,
-    DIAMONDS,
-    SPADES,
-    CLUBS
+    HEARTS = 0,
+    DIAMONDS = 1,
+    SPADES = 2,
+    CLUBS = 3
 };
 
 enum class Colour {
@@ -30,6 +32,8 @@ public:
 
     void turnFaceDown();
     void turnFaceUp();
+
+    std::string toString() const;
 
 private:
 

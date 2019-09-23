@@ -13,6 +13,6 @@ const int CARD_NO = 52;
 const int STOCK_SIZE = 24;
 const int STACKS = 7;
 
-void shuffle(std::array<Card, CARD_NO> cards, int seed);
+std::array<Card, CARD_NO> shuffle(std::array<Card, CARD_NO> cards, int seed);
 
 #endif
