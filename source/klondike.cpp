@@ -17,6 +17,7 @@ Klondike::Klondike(std::array<Card, CARD_NO> cards) {
             cardsPlaced++;
         }
     }
+    won = false;
 }
 
 void Klondike::printGame(bool hideFaceDown) {
@@ -52,6 +53,7 @@ void Klondike::printGame(bool hideFaceDown) {
 
 std::vector<std::array<int, 4>> Klondike::findMoves() {
 
+
     std::vector<std::array<int, 4>> moves;
     std::vector<std::tuple<Card, int, int>> tableauMovableCards;
 
@@ -71,7 +73,7 @@ std::vector<std::array<int, 4>> Klondike::findMoves() {
         if (stack.empty()) {
 
             for (auto const &card: tableauMovableCards) {
-                if (std::get<0>(card).getRank() == HIGH_CARD_RANK) {
+                if (std::get<0>(card).getRank() == HIGH_CARD_RANK && std::get<2>(card) != 0) {
                     tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + std::get<1>(card), std::get<2>(card), static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
                     moves.push_back(tempMove);
                 }
@@ -117,6 +119,7 @@ std::vector<std::array<int, 4>> Klondike::findMoves() {
         }
         i++;
     }
+
     for (int j = 0; j < 4; j++) {
 
         int target = 1;
@@ -124,7 +127,8 @@ std::vector<std::array<int, 4>> Klondike::findMoves() {
             target = foundation[j].top().getRank() + 1;
         }
         for (int k = 0; k < STACKS; k++) {
-            if (static_cast<int>(tableau[k].back().getSuit()) == j && tableau[k].back().getRank() == target) {
+            if (tableau[k].size() > 0 && static_cast<int>(tableau[k].back().getSuit()) == j && tableau[k].back().getRank() == target) {
+
                 tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + k, tableau[k].size() - 1, 8, j};
                 moves.push_back(tempMove);
             }
@@ -140,8 +144,17 @@ std::vector<std::array<int, 4>> Klondike::findMoves() {
         i++;
     }
 
-    for (auto const &move: moves) {
-        std::cout << "(" << move[0] << ", " << move[1] << ")" << " -> " << "(" << move[2] << ", " << move[3] << ")" << std::endl;
+    // for (auto const &move: moves) {
+    //     std::cout << "(" << move[0] << ", " << move[1] << ")" << " -> " << "(" << move[2] << ", " << move[3] << ")" << std::endl;
+    // }
+
+    if (moves.size() == 0) {
+        won = true;
+        for (auto &topCard: foundation) {
+            if (topCard.empty() || topCard.top().getRank() != 13) {
+                won = false;
+            }
+        }
     }
 
     return moves;
@@ -183,4 +196,8 @@ void Klondike::placeCards(std::array<int, 4> move, std::vector<Card> cardsToMove
                 tableau[move[2] - static_cast<int>(CardLocation::TABLEAU_START)].push_back(card);
             }
     }
+}
+
+bool Klondike::isWon() {
+    return won;
 }

@@ -3,10 +3,12 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <time.h>
 #include <array>
 #include <vector>
 #include <stack>
 #include <tuple>
+#include <chrono>
 #include "card.h"
 #include "klondike.h"
 
