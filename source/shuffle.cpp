@@ -1,4 +1,4 @@
-#include "server.h"
+#include "klondike.h"
 
 //Durstenfeld shuffle
 std::array<Card, CARD_NO> shuffle(std::array<Card, CARD_NO> cards, int seed) {

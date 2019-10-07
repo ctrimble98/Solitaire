@@ -10,9 +10,9 @@ int main(int argc, char const *argv[]) {
         seed = *argv[1];
     }
 
-    std::array<Card, CARD_NO> cards;
     auto start = std::chrono::high_resolution_clock::now();
-    int wins = 0;
+    int winsW = 0;
+    int winsR = 0;
     int games = 10000;
 
     for (size_t k = 0; k < games; k++) {
@@ -20,11 +20,16 @@ int main(int argc, char const *argv[]) {
         seed++;
         Klondike game = Klondike(seed);
         if (weightedSolve(game)) {
-            wins++;
+            winsW++;
+        }
+        game = Klondike(seed);
+        if (randomSolve(game)) {
+            winsR++;
         }
     }
     auto end = std::chrono::high_resolution_clock::now();
-    std::cout << wins << " out of " << games << " were won." << std::endl;
+    std::cout << winsR << " out of " << games << " were won by randomSolve." << std::endl;
+    std::cout << winsW << " out of " << games << " were won by weightedSolve." << std::endl;
     std::cout << "(" << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms total time)"<< '\n';
     return 0;
 }
