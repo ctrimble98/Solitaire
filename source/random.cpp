@@ -30,7 +30,13 @@ bool weightedSolve(Klondike game) {
         //game.printGame(true);
         std::array<int, 2> minFoundation = getFoudationMin(game);
         for (size_t j = 0; j < n; j++) {
-            if (bestScore <= 1 && moves[j].getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && moves[j].getCard().getRank() <= minFoundation[0] + 2) {
+            if (bestScore <= 10 && moves[j].getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && moves[j].getCard().getRank() <= minFoundation[0] + 2) {
+                if (bestScore < 10) {
+                    bestScore = 10;
+                    bestMoves = std::vector<Move>();
+                }
+                bestMoves.push_back(moves[j]);
+            } else if (bestScore <= 1 && moves[j].getStart()[1] > 0 && game.getTableau()[moves[j].getStart()[0] - static_cast<int>(CardLocation::TABLEAU_START)][moves[j].getStart()[1] - 1].isFaceDown()) {
                 if (bestScore < 1) {
                     bestScore = 1;
                     bestMoves = std::vector<Move>();

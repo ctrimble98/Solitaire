@@ -13,7 +13,7 @@ int main(int argc, char const *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int winsW = 0;
     int winsR = 0;
-    int games = 10000;
+    int games = 100000;
 
     for (size_t k = 0; k < games; k++) {
 
@@ -22,10 +22,10 @@ int main(int argc, char const *argv[]) {
         if (weightedSolve(game)) {
             winsW++;
         }
-        game = Klondike(seed);
-        if (randomSolve(game)) {
-            winsR++;
-        }
+        // game = Klondike(seed);
+        // if (randomSolve(game)) {
+        //     winsR++;
+        // }
     }
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << winsR << " out of " << games << " were won by randomSolve." << std::endl;

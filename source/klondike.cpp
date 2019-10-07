@@ -11,6 +11,10 @@ std::array<std::stack<Card>, 4> Klondike::getFoundation() {
     return foundation;
 }
 
+bool Klondike::isWon() {
+    return won;
+}
+
 Klondike::Klondike(int seed) {
 
     std::array<Card, CARD_NO> cards;
@@ -207,6 +211,11 @@ void Klondike::makeMove(Move move) {
             cardsToMove.push_back(stock[move.getStart()[1]]);
             stock.erase(stock.begin() + move.getStart()[1]);
             break;
+        case static_cast<int>(CardLocation::FOUNDATION):
+            cardsToMove.push_back(foundation[move.getStart()[1]].top());
+            foundation[move.getStart()[1]].pop();
+            //stock.erase(stock.begin() + move.getStart()[1]);
+            break;
         default:
             int tableauIndex = move.getStart()[0] - static_cast<int>(CardLocation::TABLEAU_START);
             if (move.getStart()[1] > 0 && tableau[tableauIndex][move.getStart()[1] - 1].isFaceDown()) {
@@ -231,8 +240,4 @@ void Klondike::placeCards(Move move, std::vector<Card> cardsToMove) {
                 tableau[move.getEnd()[0] - static_cast<int>(CardLocation::TABLEAU_START)].push_back(card);
             }
     }
-}
-
-bool Klondike::isWon() {
-    return won;
 }
