@@ -14,26 +14,12 @@ int main(int argc, char const *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int wins = 0;
     int games = 10000;
+
     for (size_t k = 0; k < games; k++) {
+
         seed++;
-        for (size_t i = 0; i < CARD_NO; i++) {
-            cards[i] = Card(i);
-        }
-        cards = shuffle(cards, seed);
-
-        Klondike game = Klondike(cards);
-
-        // game.printGame(true);
-        std::vector<std::array<int, 4>> moves = game.findMoves();
-        int j = 0;
-        srand(seed);
-        while (!moves.empty() && j < 200) {
-            game.makeMove(moves[rand() % moves.size()]);
-            //game.printGame(true);
-            moves = game.findMoves();
-            j++;
-        }
-        if (game.isWon()) {
+        Klondike game = Klondike(seed);
+        if (weightedSolve(game)) {
             wins++;
         }
     }

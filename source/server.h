@@ -25,4 +25,8 @@ enum class CardLocation {
 
 std::array<Card, CARD_NO> shuffle(std::array<Card, CARD_NO> cards, int seed);
 
+bool randomSolve(Klondike game);
+bool weightedSolve(Klondike game);
+std::array<int, 2> getFoudationMin(Klondike game);
+
 #endif

@@ -1,19 +1,22 @@
 #ifndef KLONDIKE_H
 #define KLONDIKE_H
 
-#include "server.h"
+//#include "server.h"
 #include "card.h"
 
 class Klondike {
 public:
 
+    std::vector<Card> getStock();
+    std::array<std::vector<Card>, 7> getTableau();
+    std::array<std::stack<Card>, 4> getFoundation();
+    bool isWon();
 
-    Klondike(std::array<Card, 52> cards);
+    Klondike(int seed);
 
-    std::vector<std::array<int, 4>> findMoves();
+    std::vector<std::array<int, 4>> findMoves(bool allLegalMoves);
     void makeMove(std::array<int, 4> move);
     void placeCards(std::array<int, 4> move, std::vector<Card> cardsToMove);
-    bool isWon();
 
     void printGame(bool hideFaceDown);
 
