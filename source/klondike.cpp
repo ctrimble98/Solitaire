@@ -183,8 +183,8 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
         i++;
     }
 
-    // for (auto const &move: moves) {
-    //     std::cout << "(" << move[0] << ", " << move[1] << ")" << " -> " << "(" << move[2] << ", " << move[3] << ")" << std::endl;
+    // for (int j = 0; j < moves.size(); j++) {
+    //     std::cout << "(" << moves[j].getStart()[0] << ", " << moves[j].getStart()[1] << ")" << " -> " << "(" << moves[j].getEnd()[0] << ", " << moves[j].getEnd()[1] << ")" << std::endl;
     // }
 
     if (moves.size() == 0) {

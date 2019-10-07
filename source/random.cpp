@@ -36,7 +36,7 @@ bool weightedSolve(Klondike game) {
                     bestMoves = std::vector<Move>();
                 }
                 bestMoves.push_back(moves[j]);
-            } else if (bestScore <= 1 && moves[j].getStart()[1] > 0 && game.getTableau()[moves[j].getStart()[0] - static_cast<int>(CardLocation::TABLEAU_START)][moves[j].getStart()[1] - 1].isFaceDown()) {
+            } else if (bestScore <= 1 && moves[j].getStart()[0] > static_cast<int>(CardLocation::STOCK) && moves[j].getStart()[0] < static_cast<int>(CardLocation::FOUNDATION) && moves[j].getStart()[1] > 0 && game.getTableau()[moves[j].getStart()[0] - static_cast<int>(CardLocation::TABLEAU_START)][moves[j].getStart()[1] - 1].isFaceDown()) {
                 if (bestScore < 1) {
                     bestScore = 1;
                     bestMoves = std::vector<Move>();
