@@ -2,6 +2,8 @@
 #define SERVER_H
 
 #include <iostream>
+#include <sstream>
+#include <iterator>
 #include <stdlib.h>
 #include <time.h>
 #include <array>

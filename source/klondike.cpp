@@ -71,6 +71,47 @@ void Klondike::printGame(bool hideFaceDown) {
     std::cout << "]" << std::endl;
 }
 
+void Klondike::printJsonToFile(bool hideFaceDown, std::string file) {
+
+    std::ofstream out(file);
+    std::streambuf *coutbuf = std::cout.rdbuf();
+    std::cout.rdbuf(out.rdbuf());
+
+    std::string jsonGame;
+
+    jsonGame.append("{\n");
+
+    jsonGame.append("\"tableau piles\":[");
+
+    for (auto const &stack: tableau) {
+        jsonGame.append("\n[");
+        for (auto const &card: stack) {
+            jsonGame.append("\"");
+            jsonGame.append(card.toString(hideFaceDown));
+            jsonGame.append("\",");
+        }
+        jsonGame.pop_back();
+        jsonGame.append("],");
+    }
+    jsonGame.pop_back();
+    jsonGame.append("\n],\n");
+
+    jsonGame.append("\"stock\": [");
+    for (auto const &card: stock) {
+        jsonGame.append("\"");
+        jsonGame.append(card.toString(hideFaceDown));
+        jsonGame.append("\",");
+    }
+    jsonGame.pop_back();
+    jsonGame.append("]\n");
+
+    jsonGame.append("}\n");
+
+    std::cout << jsonGame;
+
+    std::cout.rdbuf(coutbuf);
+}
+
 std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
     std::vector<Move> moves;

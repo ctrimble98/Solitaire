@@ -2,6 +2,7 @@
 #define KLONDIKE_H
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <stdlib.h>
 #include <time.h>
@@ -40,6 +41,7 @@ public:
     void placeCards(Move move, std::vector<Card> cardsToMove);
 
     void printGame(bool hideFaceDown);
+    void printJsonToFile(bool hideFaceDown, std::string file);
 
 private:
 
