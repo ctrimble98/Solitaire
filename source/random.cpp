@@ -27,27 +27,33 @@ bool weightedSolve(Klondike game) {
         int n = moves.size();
         int bestScore = 0;;
         std::vector<Move> bestMoves = moves;
-        //game.printGame(true);
         std::array<int, 2> minFoundation = getFoudationMin(game);
         for (size_t j = 0; j < n; j++) {
+
             if (bestScore <= 100 && moves[j].getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((moves[j].getCard().getColour() == Colour::RED && moves[j].getCard().getRank() <= minFoundation[1] + 2) || (moves[j].getCard().getColour() == Colour::BLACK && moves[j].getCard().getRank() <= minFoundation[0] + 2))) {
+                //Check for safe moves to foundation
                 if (bestScore < 100) {
                     bestScore = 100;
                     bestMoves = std::vector<Move>();
                 }
                 bestMoves.push_back(moves[j]);
             } else if (bestScore <= 20 + moves[j].getStart()[2] && moves[j].getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && moves[j].getStart()[2] > 0 && game.getTableau()[moves[j].getStart()[1]][moves[j].getStart()[2] - 1].isFaceDown()) {
+                //Check for moves that reveal hidden cards
                 if (bestScore < 20 + moves[j].getStart()[2]) {
                     bestScore = 20 + moves[j].getStart()[2];
                     bestMoves = std::vector<Move>();
                 }
                 bestMoves.push_back(moves[j]);
-            } else if (bestScore <= 10 + moves[j].getStart()[2] && moves[j].getStart()[0] != static_cast<int>(CardLocation::TABLEAU) && moves[j].getEnd()[0] == static_cast<int>(CardLocation::TABLEAU) && checkFutureHidden(game, moves[j])) {
-                if (bestScore < 10 + moves[j].getStart()[2]) {
-                    bestScore = 10 + moves[j].getStart()[2];
-                    bestMoves = std::vector<Move>();
+            } else if (bestScore < 20 && moves[j].getStart()[0] != static_cast<int>(CardLocation::TABLEAU) && moves[j].getEnd()[0] == static_cast<int>(CardLocation::TABLEAU)) {
+                //Check for moves that open up moves to reveal hidden cards
+                int moveScore = checkFutureHidden(game, moves[j]);
+                if (moveScore > 0) {
+                    if (bestScore < 10 + moveScore) {
+                        bestScore = 10 + moveScore;
+                        bestMoves = std::vector<Move>();
+                    }
+                    bestMoves.push_back(moves[j]);
                 }
-                bestMoves.push_back(moves[j]);
             }
         }
 
@@ -75,15 +81,15 @@ std::array<int, 2> getFoudationMin(Klondike game) {
         }
         i++;
     }
-    //std::cout << min[0] << std::endl;
+
     return min;
 }
 
-bool checkFutureHidden(Klondike game, Move move) {
+int checkFutureHidden(Klondike game, Move move) {
     for (size_t i = 0; i < STACKS; i++) {
         if (game.getTableau()[i].size() >= 2 && game.getTableau()[i].back().getRank() == move.getCard().getRank() - 1 && game.getTableau()[i].back().getColour() != move.getCard().getColour() && game.getTableau()[i][game.getTableau()[i].size() - 2].isFaceDown()) {
-            return true;
+            return game.getTableau()[i].size();
         }
     }
-    return false;
+    return 0;
 }
