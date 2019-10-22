@@ -27,24 +27,24 @@ int main(int argc, char const *argv[]) {
         //     winsR++;
         // }
 
-        // game.printJsonToFile(false, "klondike.json");
-        // system("../../Solvitaire/solvitaire --type klondike --classify klondike.json >> out.txt");
-        // std::ifstream infile;
-        // infile.open("out.txt");
-        // std::string line;
-        // std::string lastLine;
-        //
-        // if (infile.is_open()) {
-        //     while (getline(infile, line)) {
-        //         std::istringstream iss(line);
-        //         std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
-        //                                           std::istream_iterator<std::string>());
-        //         if (results.size() > 0) {
-        //             std::cout << results.back();
-        //         }
-        //     }
-        //     infile.close();
-        // }
+        game.printJsonToFile(false, "klondike.json");
+        system("../../Solvitaire/solvitaire --type klondike --classify klondike.json >> out.txt");
+        std::ifstream infile;
+        infile.open("out.txt");
+        std::string line;
+        std::string lastLine;
+
+        if (infile.is_open()) {
+            while (getline(infile, line)) {
+                std::istringstream iss(line);
+                std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
+                                                  std::istream_iterator<std::string>());
+                if (results.size() > 0) {
+                    std::cout << results.back();
+                }
+            }
+            infile.close();
+        }
     }
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << winsR << " out of " << games << " were won by randomSolve." << std::endl;

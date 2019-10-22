@@ -25,7 +25,7 @@ bool weightedSolve(Klondike game) {
     while (!moves.empty() && i < maxMoves) {
 
         int n = moves.size();
-        int bestScore = 0;;
+        int bestScore = -1;
         std::vector<Move> bestMoves = moves;
         std::array<int, 2> minFoundation = getFoudationMin(game);
         for (size_t j = 0; j < n; j++) {
@@ -54,6 +54,8 @@ bool weightedSolve(Klondike game) {
                     }
                     bestMoves.push_back(moves[j]);
                 }
+            } else if (bestScore <= 0 && !checkNothingMove(game, moves[j])) {
+                bestMoves.push_back(moves[j]);
             }
         }
 
@@ -92,4 +94,28 @@ int checkFutureHidden(Klondike game, Move move) {
         }
     }
     return 0;
+}
+
+bool checkNothingMove(Klondike game, Move move) {
+
+    if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] == 0 && move.getCard().getRank() != 13) {
+        int n = game.getStock().size();
+        for (size_t i = 0; i < n; i++) {
+            if (game.getStock()[i].getRank() == 13) {
+                return false;
+            }
+        }
+        for (size_t i = 0; i < STACKS; i++) {
+            int j = game.getTableau()[i].size() - 1;
+            while (j >= 0 && !game.getTableau()[i][j].isFaceDown()) {
+                j--;
+            }
+            j++;
+            if (j > 0 && game.getTableau()[i][j].getRank() == 13) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
 }

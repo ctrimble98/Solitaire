@@ -17,5 +17,6 @@ bool randomSolve(Klondike game);
 bool weightedSolve(Klondike game);
 std::array<int, 2> getFoudationMin(Klondike game);
 int checkFutureHidden(Klondike game, Move move);
+bool checkNothingMove(Klondike game, Move move);
 
 #endif
