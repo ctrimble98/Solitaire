@@ -30,15 +30,21 @@ bool weightedSolve(Klondike game) {
         //game.printGame(true);
         std::array<int, 2> minFoundation = getFoudationMin(game);
         for (size_t j = 0; j < n; j++) {
-            if (bestScore <= 10 && moves[j].getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && moves[j].getCard().getRank() <= minFoundation[0] + 2) {
-                if (bestScore < 10) {
-                    bestScore = 10;
+            if (bestScore <= 100 && moves[j].getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((moves[j].getCard().getColour() == Colour::RED && moves[j].getCard().getRank() <= minFoundation[1] + 2) || (moves[j].getCard().getColour() == Colour::BLACK && moves[j].getCard().getRank() <= minFoundation[0] + 2))) {
+                if (bestScore < 100) {
+                    bestScore = 100;
                     bestMoves = std::vector<Move>();
                 }
                 bestMoves.push_back(moves[j]);
-            } else if (bestScore <= 1 && moves[j].getStart()[0] > static_cast<int>(CardLocation::STOCK) && moves[j].getStart()[0] < static_cast<int>(CardLocation::FOUNDATION) && moves[j].getStart()[1] > 0 && game.getTableau()[moves[j].getStart()[0] - static_cast<int>(CardLocation::TABLEAU_START)][moves[j].getStart()[1] - 1].isFaceDown()) {
-                if (bestScore < 1) {
-                    bestScore = 1;
+            } else if (bestScore <= 20 + moves[j].getStart()[2] && moves[j].getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && moves[j].getStart()[2] > 0 && game.getTableau()[moves[j].getStart()[1]][moves[j].getStart()[2] - 1].isFaceDown()) {
+                if (bestScore < 20 + moves[j].getStart()[2]) {
+                    bestScore = 20 + moves[j].getStart()[2];
+                    bestMoves = std::vector<Move>();
+                }
+                bestMoves.push_back(moves[j]);
+            } else if (bestScore <= 10 + moves[j].getStart()[2] && moves[j].getStart()[0] != static_cast<int>(CardLocation::TABLEAU) && moves[j].getEnd()[0] == static_cast<int>(CardLocation::TABLEAU) && checkFutureHidden(game, moves[j])) {
+                if (bestScore < 10 + moves[j].getStart()[2]) {
+                    bestScore = 10 + moves[j].getStart()[2];
                     bestMoves = std::vector<Move>();
                 }
                 bestMoves.push_back(moves[j]);
@@ -55,11 +61,29 @@ bool weightedSolve(Klondike game) {
 std::array<int, 2> getFoudationMin(Klondike game) {
     std::array<std::stack<Card>, 4> foundation = game.getFoundation();
     std::array<int, 2> min = {0,0};
-    for (size_t i = 0; i < 4; i++) {
+    size_t i = 0;
+    while (i < 2) {
         if (!foundation[i].empty() && foundation[i].top().getRank() < min[0]) {
             min[0] = foundation[i].top().getRank();
         }
+        i++;
+    }
+
+    while (i < 4) {
+        if (!foundation[i].empty() && foundation[i].top().getRank() < min[1]) {
+            min[1] = foundation[i].top().getRank();
+        }
+        i++;
     }
     //std::cout << min[0] << std::endl;
     return min;
+}
+
+bool checkFutureHidden(Klondike game, Move move) {
+    for (size_t i = 0; i < STACKS; i++) {
+        if (game.getTableau()[i].size() >= 2 && game.getTableau()[i].back().getRank() == move.getCard().getRank() - 1 && game.getTableau()[i].back().getColour() != move.getCard().getColour() && game.getTableau()[i][game.getTableau()[i].size() - 2].isFaceDown()) {
+            return true;
+        }
+    }
+    return false;
 }

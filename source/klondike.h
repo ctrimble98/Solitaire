@@ -20,8 +20,8 @@ const int HIGH_CARD_RANK = 13;
 
 enum class CardLocation {
     STOCK = 0,
-    TABLEAU_START = 1,
-    FOUNDATION = TABLEAU_START + STACKS
+    TABLEAU = 1,
+    FOUNDATION = 2
 };
 
 std::array<Card, CARD_NO> shuffle(std::array<Card, CARD_NO> cards, int seed);

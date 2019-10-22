@@ -8,16 +8,16 @@ class Move {
 
 public:
 
-    std::array<int, 2> getStart();
-    std::array<int, 2> getEnd();
+    std::array<int, 3> getStart();
+    std::array<int, 3> getEnd();
     Card getCard();
 
-    Move(std::array<int, 2> start, std::array<int, 2> end, Card card);
+    Move(std::array<int, 3> start, std::array<int, 3> end, Card card);
 
 private:
 
-    std::array<int, 2> start;
-    std::array<int, 2>  end;
+    std::array<int, 3> start;
+    std::array<int, 3>  end;
     Card card;
 };
 

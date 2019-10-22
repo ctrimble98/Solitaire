@@ -127,39 +127,47 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
     Card dest;
     int i = 0;
-    std::array<int, 4> tempMove;
+    std::array<int, 3> moveStart;
+    std::array<int, 3> moveEnd;
     for (auto const &stack: tableau) {
 
         if (stack.empty()) {
 
             for (auto const &card: tableauMovableCards) {
                 if (std::get<0>(card).getRank() == HIGH_CARD_RANK && std::get<2>(card) != 0) {
-                    tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + std::get<1>(card), std::get<2>(card), static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
-                    moves.push_back(Move({static_cast<int>(CardLocation::TABLEAU_START) + std::get<1>(card), std::get<2>(card)}, {static_cast<int>(CardLocation::TABLEAU_START) + i, 0}, std::get<0>(card)));
+                    moveStart = {static_cast<int>(CardLocation::TABLEAU), std::get<1>(card), std::get<2>(card)};
+                    moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+                    moves.push_back(Move(moveStart, moveEnd, std::get<0>(card)));
                 }
             }
 
             if (allLegalMoves) {
                 for (int j = 0; j < STACKS; j++) {
                     if (tableau[j].back().getRank() == HIGH_CARD_RANK) {
-                        tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + j, tableau[j].size() - 1, static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
-                        moves.push_back(Move({static_cast<int>(CardLocation::TABLEAU_START) + j, tableau[j].size() - 1}, {static_cast<int>(CardLocation::TABLEAU_START) + i, 0}, tableau[j].back()));
+                        //tempMove = {static_cast<int>(CardLocation::TABLEAU) + j, tableau[j].size() - 1, static_cast<int>(CardLocation::TABLEAU) + i, 0};
+                        moveStart = {static_cast<int>(CardLocation::TABLEAU), j, tableau[j].size() - 1};
+                        moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+                        moves.push_back(Move(moveStart, moveEnd, tableau[j].back()));
                     }
                 }
             }
 
             for (int j = 0; j < stock.size(); j++) {
                 if (stock[j].getRank() == HIGH_CARD_RANK) {
-                    tempMove = {static_cast<int>(CardLocation::STOCK), j, static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
-                    moves.push_back(Move({static_cast<int>(CardLocation::STOCK), j}, {static_cast<int>(CardLocation::TABLEAU_START) + i, 0}, stock[j]));
+                    //tempMove = {static_cast<int>(CardLocation::STOCK), j, static_cast<int>(CardLocation::TABLEAU) + i, 0};
+                    moveStart = {static_cast<int>(CardLocation::STOCK), j, 0};
+                    moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+                    moves.push_back(Move(moveStart, moveEnd, stock[j]));
                 }
             }
 
             if (allLegalMoves) {
                 for (int j = 0; j < 4; j++) {
                     if (!foundation[j].empty() && foundation[j].top().getRank() == HIGH_CARD_RANK) {
-                        tempMove = {static_cast<int>(CardLocation::FOUNDATION), j, static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
-                        moves.push_back(Move({static_cast<int>(CardLocation::FOUNDATION), j}, {static_cast<int>(CardLocation::TABLEAU_START) + i, 0}, foundation[j].top()));
+                        //tempMove = {static_cast<int>(CardLocation::FOUNDATION), j, static_cast<int>(CardLocation::TABLEAU) + i, 0};
+                        moveStart = {static_cast<int>(CardLocation::FOUNDATION), j, 0};
+                        moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+                        moves.push_back(Move(moveStart, moveEnd, foundation[j].top()));
                     }
                 }
             }
@@ -169,30 +177,36 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
             for (auto const &card: tableauMovableCards) {
                 if (evalMove(dest, std::get<0>(card))) {
-                    tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + std::get<1>(card), std::get<2>(card), static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
-                    moves.push_back(Move({static_cast<int>(CardLocation::TABLEAU_START) + std::get<1>(card), std::get<2>(card)}, {static_cast<int>(CardLocation::TABLEAU_START) + i, 0}, std::get<0>(card)));
+                    //tempMove = {static_cast<int>(CardLocation::TABLEAU) + std::get<1>(card), std::get<2>(card), static_cast<int>(CardLocation::TABLEAU) + i, 0};
+                    moveStart = {static_cast<int>(CardLocation::TABLEAU), std::get<1>(card), std::get<2>(card)};
+                    moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+                    moves.push_back(Move(moveStart, moveEnd, std::get<0>(card)));
                 }
             }
 
             // for (int j = 0; j < STACKS; j++) {
             //     if (evalMove(dest, tableau[j].back())) {
-            //         tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + j, tableau[j].size() - 1, static_cast<int>(CardLocation::TABLEAU_START) + i, stack.size() - 1};
+            //         tempMove = {static_cast<int>(CardLocation::TABLEAU) + j, tableau[j].size() - 1, static_cast<int>(CardLocation::TABLEAU) + i, stack.size() - 1};
             //         moves.push_back(tempMove);
             //     }
             // }
 
             for (int j = 0; j < stock.size(); j++) {
                 if (evalMove(dest, stock[j])) {
-                    tempMove = {static_cast<int>(CardLocation::STOCK), j, static_cast<int>(CardLocation::TABLEAU_START) + i, stack.size() - 1};
-                    moves.push_back(Move({static_cast<int>(CardLocation::STOCK), j}, {static_cast<int>(CardLocation::TABLEAU_START) + i, stack.size() - 1}, stock[j]));
+                    //tempMove = {static_cast<int>(CardLocation::STOCK), j, static_cast<int>(CardLocation::TABLEAU) + i, stack.size() - 1};
+                    moveStart = {static_cast<int>(CardLocation::STOCK), j, 0};
+                    moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, stack.size() - 1};
+                    moves.push_back(Move(moveStart, moveEnd, stock[j]));
                 }
             }
 
             if (allLegalMoves) {
                 for (int j = 0; j < 4; j++) {
                     if (!foundation[j].empty() && evalMove(dest, foundation[j].top())) {
-                        tempMove = {static_cast<int>(CardLocation::FOUNDATION), j, static_cast<int>(CardLocation::TABLEAU_START) + i, 0};
-                        moves.push_back(Move({static_cast<int>(CardLocation::FOUNDATION), j}, {static_cast<int>(CardLocation::TABLEAU_START) + i, 0}, foundation[j].top()));
+                        //tempMove = {static_cast<int>(CardLocation::FOUNDATION), j, static_cast<int>(CardLocation::TABLEAU) + i, 0};
+                        moveStart = {static_cast<int>(CardLocation::FOUNDATION), j, 0};
+                        moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+                        moves.push_back(Move(moveStart, moveEnd, foundation[j].top()));
                     }
                 }
             }
@@ -209,15 +223,19 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
         for (int k = 0; k < STACKS; k++) {
             if (tableau[k].size() > 0 && static_cast<int>(tableau[k].back().getSuit()) == j && tableau[k].back().getRank() == target) {
 
-                tempMove = {static_cast<int>(CardLocation::TABLEAU_START) + k, tableau[k].size() - 1, static_cast<int>(CardLocation::FOUNDATION), j};
-                moves.push_back(Move({static_cast<int>(CardLocation::TABLEAU_START) + k, tableau[k].size() - 1}, {static_cast<int>(CardLocation::FOUNDATION), j}, tableau[k].back()));
+                //tempMove = {static_cast<int>(CardLocation::TABLEAU) + k, tableau[k].size() - 1, static_cast<int>(CardLocation::FOUNDATION), j};
+                moveStart = {static_cast<int>(CardLocation::TABLEAU), k, tableau[k].size() - 1};
+                moveEnd = {static_cast<int>(CardLocation::FOUNDATION), j, 0};
+                moves.push_back(Move(moveStart, moveEnd, tableau[k].back()));
             }
         }
 
         for (int k = 0; k < stock.size(); k++) {
             if (static_cast<int>(stock[k].getSuit()) == j && stock[k].getRank() == target) {
-                tempMove = {static_cast<int>(CardLocation::STOCK), k, static_cast<int>(CardLocation::FOUNDATION), j};
-                moves.push_back(Move({static_cast<int>(CardLocation::STOCK), k}, {static_cast<int>(CardLocation::FOUNDATION), j}, stock[k]));
+                //tempMove = {static_cast<int>(CardLocation::STOCK), k, static_cast<int>(CardLocation::FOUNDATION), j};
+                moveStart = {static_cast<int>(CardLocation::STOCK), k, 0};
+                moveEnd = {static_cast<int>(CardLocation::FOUNDATION), j, 0};
+                moves.push_back(Move(moveStart, moveEnd, stock[k]));
             }
         }
 
@@ -225,7 +243,7 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
     }
 
     // for (int j = 0; j < moves.size(); j++) {
-    //     std::cout << "(" << moves[j].getStart()[0] << ", " << moves[j].getStart()[1] << ")" << " -> " << "(" << moves[j].getEnd()[0] << ", " << moves[j].getEnd()[1] << ")" << std::endl;
+    //     std::cout << "(" << moves[j].getStart()[0] << ", " << moves[j].getStart()[1] << ", " << moves[j].getStart()[2] << ")" << " -> " << "(" << moves[j].getEnd()[0] << ", " << moves[j].getEnd()[1] << ", " << moves[j].getEnd()[2] << ")" << std::endl;
     // }
 
     if (moves.size() == 0) {
@@ -258,14 +276,14 @@ void Klondike::makeMove(Move move) {
             //stock.erase(stock.begin() + move.getStart()[1]);
             break;
         default:
-            int tableauIndex = move.getStart()[0] - static_cast<int>(CardLocation::TABLEAU_START);
-            if (move.getStart()[1] > 0 && tableau[tableauIndex][move.getStart()[1] - 1].isFaceDown()) {
-                tableau[tableauIndex][move.getStart()[1] - 1].turnFaceUp();
+            int tableauIndex = move.getStart()[1];
+            if (move.getStart()[2] > 0 && tableau[tableauIndex][move.getStart()[2] - 1].isFaceDown()) {
+                tableau[tableauIndex][move.getStart()[2] - 1].turnFaceUp();
             }
-            for (int i = move.getStart()[1]; i < tableau[tableauIndex].size(); i++) {
+            for (int i = move.getStart()[2]; i < tableau[tableauIndex].size(); i++) {
                 cardsToMove.push_back(tableau[tableauIndex][i]);
             }
-            tableau[tableauIndex].erase(tableau[tableauIndex].begin() + move.getStart()[1], tableau[tableauIndex].end());
+            tableau[tableauIndex].erase(tableau[tableauIndex].begin() + move.getStart()[2], tableau[tableauIndex].end());
     }
     placeCards(move, cardsToMove);
 }
@@ -278,7 +296,7 @@ void Klondike::placeCards(Move move, std::vector<Card> cardsToMove) {
             break;
         default:
             for (auto const &card: cardsToMove) {
-                tableau[move.getEnd()[0] - static_cast<int>(CardLocation::TABLEAU_START)].push_back(card);
+                tableau[move.getEnd()[1]].push_back(card);
             }
     }
 }
