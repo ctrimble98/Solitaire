@@ -13,7 +13,14 @@ int main(int argc, char const *argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     int winsW = 0;
     int winsR = 0;
-    int games = 10000;
+    int games = 10;
+
+    std::string solvCommand = "../../Solvitaire/solvitaire --type klondike --classify klondike.json >> ";
+    std::string solvOutFile = "solvOut.txt";
+
+    std::ofstream ofs;
+    std::ifstream infile;
+    infile.open(solvOutFile);
 
     for (size_t k = 0; k < games; k++) {
 
@@ -27,23 +34,26 @@ int main(int argc, char const *argv[]) {
         //     winsR++;
         // }
 
+        ofs.open(solvOutFile, std::ofstream::out | std::ofstream::trunc);
+        ofs.close();
+
         game.printJsonToFile(false, "klondike.json");
-        system("../../Solvitaire/solvitaire --type klondike --classify klondike.json >> out.txt");
-        std::ifstream infile;
-        infile.open("out.txt");
+        system((solvCommand + solvOutFile).c_str());
         std::string line;
         std::string lastLine;
+        std::string result;
 
+        infile.seekg(0, std::ios::beg);
         if (infile.is_open()) {
             while (getline(infile, line)) {
                 std::istringstream iss(line);
-                std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
-                                                  std::istream_iterator<std::string>());
+                std::vector<std::string> results((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
                 if (results.size() > 0) {
-                    std::cout << results.back();
+                    result = results.back();
                 }
             }
             infile.close();
+            std::cout << result << '\n';
         }
     }
     auto end = std::chrono::high_resolution_clock::now();

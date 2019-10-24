@@ -2,6 +2,7 @@
 #define SERVER_H
 
 #include <iostream>
+#include <ios>
 #include <sstream>
 #include <iterator>
 #include <stdlib.h>
