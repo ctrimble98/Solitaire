@@ -11,6 +11,7 @@
 #include <stack>
 #include <tuple>
 #include <chrono>
+#include <random>
 #include "move.h"
 
 const int CARD_NO = 52;

@@ -11,11 +11,10 @@ int main(int argc, char const *argv[]) {
     }
 
     auto start = std::chrono::high_resolution_clock::now();
-    int winsW = 0;
-    int winsR = 0;
-    int games = 100;
+    int wins = 0;
+    int games = 100000;
 
-    std::string solvCommand = "../solvitaireHome --type klondike --classify ";
+    std::string solvCommand = "../solvitaireHome --type klondike-deal-1 --classify ";
     std::string solvInput = "klondike.json";
     std::string solvOutFile = "solvOut.txt";
 
@@ -27,58 +26,61 @@ int main(int argc, char const *argv[]) {
 
     bool gameComp[games];
     std::string gameCompText[games];
+    bool solvitaire = false;
 
-    for (size_t k = 0; k < games; k++) {
+    for (int i = 0; i < games; i++) {
 
         seed++;
         Klondike game = Klondike(seed);
         if (weightedSolve(game)) {
-            gameComp[k] = true;
-            winsW++;
+            gameComp[i] = true;
+            wins++;
         } else {
-            gameComp[k] = false;
+            gameComp[i] = false;
         }
-        // game = Klondike(seed);
-        // if (randomSolve(game)) {
-        //     winsR++;
-        // }
 
-        game.printJsonToFile(false, solvInput);
-        system((solvCommand + solvInput + " >> " + solvOutFile).c_str());
+        if (solvitaire) {
+            game.printJsonToFile(false, solvInput);
+            system((solvCommand + solvInput + " >> " + solvOutFile).c_str());
+        }
     }
 
-    std::string line;
-    std::string lastLine;
-    std::string result;
+    if (solvitaire) {
+        std::string line;
+        std::string result;
 
-    int k = 0;
-    infile.seekg(0, std::ios::beg);
-    if (infile.is_open()) {
-        while (getline(infile, line)) {
-            std::istringstream iss(line);
-            std::vector<std::string> results((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
-            if (results.size() > 0) {
-                gameCompText[k] = results.back();
-                k++;
+        infile.seekg(0, std::ios::beg);
+        if (infile.is_open()) {
+            int i = 0;
+            while (getline(infile, line)) {
+                std::istringstream iss(line);
+                std::vector<std::string> results((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
+                if (results.size() > 0) {
+                    gameCompText[i] = results.back();
+                    i++;
+                }
+            }
+            infile.close();
+        }
+
+        int impGamesOne = 0;
+        for (int i = 0; i < games; i++) {
+            std::cout << gameComp[i] << " " << gameCompText[i] << std::endl;
+        }
+        for (int i = 0; i < games; i++) {
+            if (gameComp[i] == true && !gameCompText[i].compare("unsolvable")) {
+                impGamesOne++;
             }
         }
-        infile.close();
+        std::cout << impGamesOne << " unsolvable games were won" << std::endl;
     }
-
-    int impGamesOne = 0;
-    for (int i = 0; i < games; i++) {
-        std::cout << gameComp[i] << " " << gameCompText[i] << std::endl;
-    }
-    for (int i = 0; i < games; i++) {
-        if (gameComp[i] == false && gameCompText[i].compare("solved")) {
-            impGamesOne++;
-        }
-    }
-    std::cout << impGamesOne << " unsolvable games were won" << std::endl;
 
     auto end = std::chrono::high_resolution_clock::now();
-    std::cout << winsR << " out of " << games << " were won by randomSolve." << std::endl;
-    std::cout << winsW << " out of " << games << " were won by weightedSolve." << std::endl;
+    std::cout << wins << " out of " << games << " were won by weightedSolve." << std::endl;
     std::cout << "(" << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms total time)"<< '\n';
     return 0;
+}
+
+void runGames(int games, int seed, bool verify) {
+
 }
