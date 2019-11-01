@@ -50,6 +50,7 @@ private:
     std::vector<Card> stock;
     std::array<std::vector<Card>, 7> tableau;
     std::array<std::stack<Card>, 4> foundation;
+    int deal;
 
     bool evalMove(Card dest, Card pot);
 };

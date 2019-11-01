@@ -1,0 +1,30 @@
+#ifndef SOLVER_H
+#define SOLVER_H
+
+#include "klondike.h"
+#include <functional>
+
+class Solver {
+public:
+
+    bool run(Klondike game);
+    std::string getName();
+
+    Solver(std::function<bool(Klondike)> solvFcn, std::string name);
+
+private:
+
+    std::string name;
+    std::function<bool(Klondike)> solvFcn;
+};
+
+bool randomSolve(Klondike game);
+bool weightedSolveAll(Klondike game);
+bool weightedSolve1(Klondike game);
+bool weightedSolve2(Klondike game);
+bool weightedSolve3(Klondike game);
+std::array<int, 2> getFoudationMin(Klondike game);
+int checkFutureHidden(Klondike game, Move move);
+bool checkNothingMove(Klondike game, Move move);
+
+#endif

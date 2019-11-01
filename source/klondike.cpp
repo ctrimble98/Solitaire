@@ -17,19 +17,20 @@ bool Klondike::isWon() {
 
 Klondike::Klondike(int seed) {
 
+    deal = 1;
     std::array<Card, CARD_NO> cards;
-    for (size_t i = 0; i < CARD_NO; i++) {
+    for (int i = 0; i < CARD_NO; i++) {
         cards[i] = Card(i);
     }
     cards = shuffle(cards, seed);
 
-    for (size_t i = 0; i < STOCK_SIZE; i++) {
+    for (int i = 0; i < STOCK_SIZE; i++) {
         stock.push_back(cards[i]);
     }
 
     int cardsPlaced = 0;
-    for (size_t i = 0; i < STACKS; i++) {
-        for (size_t j = 0; j <= i; j++) {
+    for (int i = 0; i < STACKS; i++) {
+        for (int j = 0; j <= i; j++) {
             tableau[i].push_back(cards[STOCK_SIZE + cardsPlaced]);
             if (j < i) {
                 tableau[i][j].turnFaceDown();
@@ -298,5 +299,14 @@ void Klondike::placeCards(Move move, std::vector<Card> cardsToMove) {
             for (auto const &card: cardsToMove) {
                 tableau[move.getEnd()[1]].push_back(card);
             }
+    }
+}
+
+std::vector<Card> getAvailableStock(int stockPointer) {
+    int n = stock.size();
+    int i = stockPointer;
+    bool foundDup = false;
+    while (!foundDup) {
+        
     }
 }
