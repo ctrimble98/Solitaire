@@ -1,8 +1,9 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
-#include "klondike.h"
+#include "heuristic.h"
 #include <functional>
+#include <algorithm>
 
 class Solver {
 public:
@@ -10,12 +11,13 @@ public:
     bool run(Klondike game);
     std::string getName();
 
-    Solver(std::function<bool(Klondike)> solvFcn, std::string name);
+    Solver(std::function<bool(Klondike)> solvFcn, std::string name, std::vector<Heuristic> heuristics);
 
 private:
 
     std::string name;
     std::function<bool(Klondike)> solvFcn;
+    std::vector<Heuristic> heuristics;
 };
 
 bool randomSolve(Klondike game);
