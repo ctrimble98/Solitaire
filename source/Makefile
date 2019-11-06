@@ -3,8 +3,8 @@ FLAGS	=	-g	-O2	-Wextra
 
 all:	server
 
-server:	server.cpp	server.h	shuffle.cpp	card.cpp	card.h	move.cpp	move.h	klondike.cpp	klondike.h	solver.cpp	solver.h	solverCompare.cpp	solverCompare.h
-	${CC}	${FLAGS}	server.cpp	shuffle.cpp	card.cpp	move.cpp	klondike.cpp	solver.cpp	solverCompare.cpp	-o	server
+server:	server.cpp	server.h	shuffle.cpp	card.cpp	card.h	move.cpp	move.h	klondike.cpp	klondike.h	heuristic.cpp	heuristic.h	solver.cpp	solver.h	solverCompare.cpp	solverCompare.h
+	${CC}	${FLAGS}	server.cpp	shuffle.cpp	card.cpp	move.cpp	klondike.cpp	heuristic.cpp	solver.cpp	solverCompare.cpp	-o	server
 
 clean:
-	rm	-f	server
+	rm	-f	server	server.exe	out.txt	klondike.json	solvOut.txt

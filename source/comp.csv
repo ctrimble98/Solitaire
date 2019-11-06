@@ -1,7 +1,4 @@
-100000 games played
-,	Random,	All,	Found + H,	Not freeing for K,	Just Found
-Random,	13.15,	2.605,	2.716,	2.378,	7.643
-All,	40.99,	51.535,	11.764,	8.268,	39.984
-Found + H,	38.164,	8.827,	48.598,	6.081,	37.034
-Not freeing for K,	41.443,	8.948,	9.698,	52.215,	40.439
-Just Found,	9.017,	2.973,	2.96,	2.748,	14.524
+1000 games played
+,	Random,	All
+Random,	13.3,	2.9
+All,	33.7,	44.1

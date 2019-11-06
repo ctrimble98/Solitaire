@@ -302,11 +302,11 @@ void Klondike::placeCards(Move move, std::vector<Card> cardsToMove) {
     }
 }
 
-std::vector<Card> getAvailableStock(int stockPointer) {
-    int n = stock.size();
-    int i = stockPointer;
-    bool foundDup = false;
-    while (!foundDup) {
-        
-    }
-}
+// std::vector<Card> Klondike::getAvailableStock(int stockPointer) {
+//     int n = stock.size();
+//     int i = stockPointer;
+//     bool foundDup = false;
+//     while (!foundDup) {
+//
+//     }
+// }

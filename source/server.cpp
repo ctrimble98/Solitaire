@@ -12,7 +12,7 @@ int main(int argc, char const *argv[]) {
 
     auto start = std::chrono::high_resolution_clock::now();
     int wins = 0;
-    int games = 100000;
+    int games = 1000;
 
     std::string solvCommand = "../solvitaireHome --type klondike-deal-1 --classify ";
     std::string solvInput = "klondike.json";
@@ -28,12 +28,15 @@ int main(int argc, char const *argv[]) {
     std::string gameCompText[games];
     bool solvitaire = false;
 
+    std::vector<Heuristic> heuristics;
+    heuristics.push_back(Heuristic(safeFoundationHeur, SAFE_FOUNDATION_SCORE));
+    heuristics.push_back(Heuristic(revealHiddenHeur, REVEAL_HIDDEN_SCORE));
+    heuristics.push_back(Heuristic(planRevealHiddenHeur, PLAN_REVEAL_HIDDEN_SCORE));
+    heuristics.push_back(Heuristic(emptyNoKingHeur, EMPTY_SPACE_NO_KING_SCORE));
+
     std::vector<Solver> solvers;
-    solvers.push_back(Solver(randomSolve, "Random"));
-    solvers.push_back(Solver(weightedSolveAll, "All"));
-    solvers.push_back(Solver(weightedSolve1, "Found + H"));
-    solvers.push_back(Solver(weightedSolve2, "Not freeing for K"));
-    solvers.push_back(Solver(weightedSolve3, "Just Found"));
+    solvers.push_back(Solver("Random", std::vector<Heuristic>()));
+    solvers.push_back(Solver("All", heuristics));
     SolverCompare comp(solvers);
 
     for (int i = 0; i < games; i++) {
@@ -41,17 +44,11 @@ int main(int argc, char const *argv[]) {
         seed++;
         Klondike game = Klondike(seed);
         comp.runSolvers(game);
-        // if (weightedSolve(game)) {
-        //     gameComp[i] = true;
-        //     wins++;
-        // } else {
-        //     gameComp[i] = false;
-        // }
-        //
-        // if (solvitaire) {
-        //     game.printJsonToFile(false, solvInput);
-        //     system((solvCommand + solvInput + " >> " + solvOutFile).c_str());
-        // }
+
+        if (solvitaire) {
+            game.printJsonToFile(false, solvInput);
+            system((solvCommand + solvInput + " >> " + solvOutFile).c_str());
+        }
     }
 
     if (solvitaire) {
@@ -85,7 +82,7 @@ int main(int argc, char const *argv[]) {
     }
 
     auto end = std::chrono::high_resolution_clock::now();
-    // std::cout << wins << " out of " << games << " were won by weightedSolve." << std::endl;
+
     std::ofstream out("comp.csv");
     std::streambuf *coutbuf = std::cout.rdbuf();
     std::cout.rdbuf(out.rdbuf());
