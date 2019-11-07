@@ -1,6 +1,6 @@
 #include "heuristic.h"
 
-std::function<bool(Klondike, Move)> Heuristic::getFcn() {
+std::function<int(Klondike, Move)> Heuristic::getFcn() {
     return fcn;
 }
 
@@ -8,29 +8,58 @@ int Heuristic::getScore() {
     return score;
 }
 
-Heuristic::Heuristic(std::function<bool(Klondike, Move)> fcn, int score) : fcn(fcn), score(score) {
+Heuristic::Heuristic(HeuristicType type, int score) : score(score) {
+    switch (type) {
+        case SAFE_FOUNDATION:
+            fcn = std::bind(&Heuristic::safeFoundationHeur, this, std::placeholders::_1, std::placeholders::_2);
+            break;
+        case REVEAL_HIDDEN:
+            fcn = std::bind(&Heuristic::revealHiddenHeur, this, std::placeholders::_1, std::placeholders::_2);
+            break;
+        case PLAN_REVEAL_HIDDEN:
+            fcn = std::bind(&Heuristic::planRevealHiddenHeur, this, std::placeholders::_1, std::placeholders::_2);
+            break;
+        case EMPTY_SPACE_NO_KING:
+            fcn = std::bind(&Heuristic::emptyNoKingHeur, this, std::placeholders::_1, std::placeholders::_2);
+            break;
+    }
 }
 
 bool operator> (Heuristic h1, Heuristic h2) {
     return h1.score > h2.score;
 }
 
-bool safeFoundationHeur(Klondike game, Move move) {
+int Heuristic::safeFoundationHeur(Klondike game, Move move) {
     std::array<int, 2> minFoundation = getFoudationMin(game);
-    return move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((move.getCard().getColour() == Colour::RED && move.getCard().getRank() <= minFoundation[1] + 2) || (move.getCard().getColour() == Colour::BLACK && move.getCard().getRank() <= minFoundation[0] + 2));
+    if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((move.getCard().getColour() == Colour::RED && move.getCard().getRank() <= minFoundation[1] + 2) || (move.getCard().getColour() == Colour::BLACK && move.getCard().getRank() <= minFoundation[0] + 2))) {
+        return score;
+    } else {
+        return NOT_SATISFIED_SCORE;
+    }
 }
 
-bool revealHiddenHeur(Klondike game, Move move) {
-    return move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown();
+int Heuristic::revealHiddenHeur(Klondike game, Move move) {
+    if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown()) {
+        return score;
+    } else {
+        return NOT_SATISFIED_SCORE;
+    }
 }
 
-bool planRevealHiddenHeur(Klondike game, Move move) {
-    moves[j].getStart()[0] != static_cast<int>(CardLocation::TABLEAU) && moves[j].getEnd()[0] == static_cast<int>(CardLocation::TABLEAU)) {
-    int moveScore = checkFutureHidden(game, moves[j]);
+int Heuristic::planRevealHiddenHeur(Klondike game, Move move) {
+    if (move.getStart()[0] != static_cast<int>(CardLocation::TABLEAU) && move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU)) {
+        return score + checkFutureHidden(game, move);
+    } else {
+        return NOT_SATISFIED_SCORE;
+    }
 }
 
-bool emptyNoKingHeur(Klondike game, Move move) {
-
+int Heuristic::emptyNoKingHeur(Klondike game, Move move) {
+    if (checkNothingMove(game, move)) {
+        return score;
+    } else {
+        return NOT_SATISFIED_SCORE;
+    }
 }
 
 std::array<int, 2> getFoudationMin(Klondike game) {

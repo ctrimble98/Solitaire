@@ -10,22 +10,22 @@ bool Solver::run(Klondike game) {
     std::vector<Move> moves = game.findMoves(allLegalMoves);
     int i = 0;
     srand(time(NULL));
-    //return solvFcn(game);
+
     while (!moves.empty() && i < maxMoves) {
         int n = moves.size();
         std::vector<Move> bestMoves = moves;
-        std::vector<int> scores(moves.size());
-        std::array<int, 2> minFoundation = getFoudationMin(game);
-        for (int j = 0; j < n; j++) {
-            for (auto &h: heuristics) {
-                scores[j] = h.getFcn()(game, moves[j]);
-                if (scores[j] != 0) {
-                    break;
-                }
-            }
-        }
+        std::vector<int> scores(n);
+        // std::array<int, 2> minFoundation = getFoudationMin(game);
+        // for (int j = 0; j < n; j++) {
+        //     for (auto &h: heuristics) {
+        //         scores[j] = h.getFcn()(game, moves[j], h.getScore());
+        //         if (scores[j] != NOT_SATISFIED_SCORE) {
+        //             break;
+        //         }
+        //     }
+        // }
 
-        int bestScore = -1;
+        int bestScore = NOT_SATISFIED_SCORE + 1;
         for (int j = 0; j < n; j++) {
             for (auto &h: heuristics) {
                 if (h.getScore() >= bestScore) {
@@ -36,7 +36,6 @@ bool Solver::run(Klondike game) {
                             bestMoves = std::vector<Move>();
                         }
                         bestMoves.push_back(moves[j]);
-                    } else {
                         break;
                     }
                 } else {

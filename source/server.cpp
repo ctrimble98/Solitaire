@@ -29,10 +29,10 @@ int main(int argc, char const *argv[]) {
     bool solvitaire = false;
 
     std::vector<Heuristic> heuristics;
-    heuristics.push_back(Heuristic(safeFoundationHeur, SAFE_FOUNDATION_SCORE));
-    heuristics.push_back(Heuristic(revealHiddenHeur, REVEAL_HIDDEN_SCORE));
-    heuristics.push_back(Heuristic(planRevealHiddenHeur, PLAN_REVEAL_HIDDEN_SCORE));
-    heuristics.push_back(Heuristic(emptyNoKingHeur, EMPTY_SPACE_NO_KING_SCORE));
+    heuristics.push_back(Heuristic(HeuristicType::SAFE_FOUNDATION, SAFE_FOUNDATION_SCORE));
+    // heuristics.push_back(Heuristic(revealHiddenHeur, REVEAL_HIDDEN_SCORE));
+    // heuristics.push_back(Heuristic(planRevealHiddenHeur, PLAN_REVEAL_HIDDEN_SCORE));
+    // heuristics.push_back(Heuristic(emptyNoKingHeur, EMPTY_SPACE_NO_KING_SCORE));
 
     std::vector<Solver> solvers;
     solvers.push_back(Solver("Random", std::vector<Heuristic>()));
