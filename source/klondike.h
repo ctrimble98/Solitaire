@@ -35,11 +35,12 @@ public:
     std::array<std::stack<Card>, 4> getFoundation();
     bool isWon();
 
-    Klondike(int seed);
+    Klondike(int seed, int deal);
 
     std::vector<Move> findMoves(bool allLegalMoves);
     void makeMove(Move move);
     void placeCards(Move move, std::vector<Card> cardsToMove);
+    std::vector<int> getAvailableStock();
 
     void printGame(bool hideFaceDown);
     void printJsonToFile(bool hideFaceDown, std::string file);
@@ -51,6 +52,7 @@ private:
     std::array<std::vector<Card>, 7> tableau;
     std::array<std::stack<Card>, 4> foundation;
     int deal;
+    int stockPointer;
 
     bool evalMove(Card dest, Card pot);
 };

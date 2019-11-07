@@ -27,10 +27,11 @@ bool Solver::run(Klondike game) {
         int bestScore = NOT_SATISFIED_SCORE + 1;
         for (int j = 0; j < n; j++) {
             for (auto &h: heuristics) {
-                if (h.getScore() >= bestScore) {
-                    int score = h.getFcn()(game, moves[j]);
-                    if (score == 1000) {
-                        std::cout << "TEST" << '\n';
+                //std::cout << h.getScore() << '\n';
+                //if (h.getScore() >= bestScore) {
+                    int score = h.run(game, moves[j]);
+                    if (score != NOT_SATISFIED_SCORE) {
+                        //std::cout << score << '\n';
                     }
                     if (score >= bestScore) {
                         // std::cout << score << '\n';
@@ -41,9 +42,9 @@ bool Solver::run(Klondike game) {
                         bestMoves.push_back(moves[j]);
                         break;
                     }
-                } else {
-                    break;
-                }
+                // } else {
+                //     break;
+                // }
             }
         }
         game.makeMove(bestMoves[rand() % bestMoves.size()]);

@@ -20,24 +20,24 @@ enum HeuristicType {
 class Heuristic {
 public:
 
-    std::function<int(Klondike, Move)> getFcn();
+    int run(Klondike game, Move move);
     int getScore();
     Heuristic(HeuristicType type, int score);
 
     friend bool operator> (Heuristic h1, Heuristic h2);
 
-    int safeFoundationHeur(Klondike game, Move move);
-    int revealHiddenHeur(Klondike game, Move move);
-    int planRevealHiddenHeur(Klondike game, Move move);
-    int emptyNoKingHeur(Klondike game, Move move);
-
 private:
-    std::function<bool(Klondike, Move)> fcn;
+    std::function<int(Klondike, Move, int)> fcn;
     int score;
 };
 
 std::array<int, 2> getFoudationMin(Klondike game);
 int checkFutureHidden(Klondike game, Move move);
 bool checkNothingMove(Klondike game, Move move);
+
+int safeFoundationHeur(Klondike game, Move move, int score);
+int revealHiddenHeur(Klondike game, Move move, int score);
+int planRevealHiddenHeur(Klondike game, Move move, int score);
+int emptyNoKingHeur(Klondike game, Move move, int score);
 
 #endif

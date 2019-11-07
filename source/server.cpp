@@ -10,12 +10,9 @@ int main(int argc, char const *argv[]) {
         seed = *argv[1];
     }
 
-
-    std::cout << NOT_SATISFIED_SCORE << '\n';
-
     auto start = std::chrono::high_resolution_clock::now();
     int wins = 0;
-    int games = 1000;
+    int games = 100;
 
     std::string solvCommand = "../solvitaireHome --type klondike-deal-1 --classify ";
     std::string solvInput = "klondike.json";
@@ -31,21 +28,35 @@ int main(int argc, char const *argv[]) {
     std::string gameCompText[games];
     bool solvitaire = false;
 
-    std::vector<Heuristic> heuristics;
-    heuristics.push_back(Heuristic(HeuristicType::SAFE_FOUNDATION, SAFE_FOUNDATION_SCORE));
-    // heuristics.push_back(Heuristic(revealHiddenHeur, REVEAL_HIDDEN_SCORE));
-    // heuristics.push_back(Heuristic(planRevealHiddenHeur, PLAN_REVEAL_HIDDEN_SCORE));
-    // heuristics.push_back(Heuristic(emptyNoKingHeur, EMPTY_SPACE_NO_KING_SCORE));
+    Heuristic h1 = Heuristic(HeuristicType::SAFE_FOUNDATION, SAFE_FOUNDATION_SCORE);
+    Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, REVEAL_HIDDEN_SCORE);
+    Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, PLAN_REVEAL_HIDDEN_SCORE);
+    Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, EMPTY_SPACE_NO_KING_SCORE);
 
     std::vector<Solver> solvers;
     solvers.push_back(Solver("Random", std::vector<Heuristic>()));
-    solvers.push_back(Solver("All", heuristics));
+
+    std::vector<Heuristic> heuristics;
+    heuristics.push_back(h3);
+    heuristics.push_back(h4);
+    heuristics.push_back(h1);
+    heuristics.push_back(h2);
+    // solvers.push_back(Solver("All", heuristics));
+
+    heuristics = std::vector<Heuristic>();
+    heuristics.push_back(h1);
+    heuristics.push_back(h2);
+    heuristics.push_back(h3);
+    // solvers.push_back(Solver("No empty unless king", heuristics));
+
     SolverCompare comp(solvers);
 
     for (int i = 0; i < games; i++) {
+        float percent = static_cast<float>(i*100)/games;
+        std::cout << percent << "%\r";
 
         seed++;
-        Klondike game = Klondike(seed);
+        Klondike game = Klondike(seed, 1);
         comp.runSolvers(game);
 
         if (solvitaire) {
