@@ -32,6 +32,7 @@ bool operator> (Heuristic h1, Heuristic h2) {
 int Heuristic::safeFoundationHeur(Klondike game, Move move) {
     std::array<int, 2> minFoundation = getFoudationMin(game);
     if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((move.getCard().getColour() == Colour::RED && move.getCard().getRank() <= minFoundation[1] + 2) || (move.getCard().getColour() == Colour::BLACK && move.getCard().getRank() <= minFoundation[0] + 2))) {
+        // std::cout << SAFE_FOUNDATION_SCORE << '\n';
         return score;
     } else {
         return NOT_SATISFIED_SCORE;

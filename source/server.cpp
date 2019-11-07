@@ -10,6 +10,9 @@ int main(int argc, char const *argv[]) {
         seed = *argv[1];
     }
 
+
+    std::cout << NOT_SATISFIED_SCORE << '\n';
+
     auto start = std::chrono::high_resolution_clock::now();
     int wins = 0;
     int games = 1000;

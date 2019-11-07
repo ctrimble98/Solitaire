@@ -24,13 +24,16 @@ bool Solver::run(Klondike game) {
         //         }
         //     }
         // }
-
         int bestScore = NOT_SATISFIED_SCORE + 1;
         for (int j = 0; j < n; j++) {
             for (auto &h: heuristics) {
                 if (h.getScore() >= bestScore) {
                     int score = h.getFcn()(game, moves[j]);
+                    if (score == 1000) {
+                        std::cout << "TEST" << '\n';
+                    }
                     if (score >= bestScore) {
+                        // std::cout << score << '\n';
                         if (score > bestScore) {
                             bestScore = score;
                             bestMoves = std::vector<Move>();
