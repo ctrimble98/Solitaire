@@ -62,6 +62,14 @@ int emptyNoKingHeur(Klondike game, Move move, int score) {
     }
 }
 
+int checkFutureStock(Klondike game, Move move, int score) {
+    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && checkStockMoves(game, move.getStart()[1])) {
+        return score;
+    } else {
+        return NOT_SATISFIED_SCORE;
+    }
+}
+
 std::array<int, 2> getFoudationMin(Klondike game) {
     std::array<std::stack<Card>, 4> foundation = game.getFoundation();
     std::array<int, 2> min = {0,0};
@@ -114,4 +122,15 @@ bool checkNothingMove(Klondike game, Move move) {
         return true;
     }
     return false;
+}
+
+bool checkStockMoves(Klondike game, int stockIndex) {
+    std::vector<int> availableStock = game.getAvailableStock(stockIndex);
+    for (int i = 0; i < availableStock.size(); i++) {
+        int stockIndex = availableStock[i];
+        moveStart = {static_cast<int>(CardLocation::STOCK), stockIndex, 0};
+        moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+        Move move(moveStart, moveEnd, stock[stockIndex]);
+        if (safeFoundationHeur(game, move))
+    }
 }

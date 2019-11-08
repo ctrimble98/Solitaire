@@ -6,7 +6,7 @@ Solver::Solver(std::string name, std::vector<Heuristic> heuristics) : name(name)
 
 bool Solver::run(Klondike game) {
     bool allLegalMoves = false;
-    int maxMoves = 400;
+    int maxMoves = 200;
     std::vector<Move> moves = game.findMoves(allLegalMoves);
     int movesMade = 0;
     srand(time(NULL));
@@ -17,20 +17,18 @@ bool Solver::run(Klondike game) {
         int bestScore = NOT_SATISFIED_SCORE + 1;
         for (auto const &move: moves) {
             for (auto &h: heuristics) {
-                //std::cout << h.getScore() << '\n';
-                //if (h.getScore() >= bestScore) {
-                    int score = h.run(game, move);
-                    if (score >= bestScore) {
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestMoves = std::vector<Move>();
-                        }
-                        bestMoves.push_back(move);
-                        break;
+                
+                int score = h.run(game, move);
+                if (score >= bestScore) {
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMoves = std::vector<Move>();
                     }
-                // } else {
-                //     break;
-                // }
+                    bestMoves.push_back(move);
+                    break;
+                } else if (score != NOT_SATISFIED_SCORE) {
+                    break;
+                }
             }
         }
         game.makeMove(bestMoves[rand() % bestMoves.size()]);

@@ -12,6 +12,7 @@
 #include <tuple>
 #include <chrono>
 #include <random>
+#include <algorithm>
 #include "move.h"
 
 const int CARD_NO = 52;
@@ -40,7 +41,7 @@ public:
     std::vector<Move> findMoves(bool allLegalMoves);
     void makeMove(Move move);
     void placeCards(Move move, std::vector<Card> cardsToMove);
-    std::vector<int> getAvailableStock();
+    std::vector<int> getAvailableStock(int stockPointer);
 
     void printGame(bool hideFaceDown);
     void printJsonToFile(bool hideFaceDown, std::string file);

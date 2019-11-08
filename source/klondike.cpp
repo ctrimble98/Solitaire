@@ -43,6 +43,8 @@ Klondike::Klondike(int seed, int deal) : deal(deal) {
 
 void Klondike::printGame(bool hideFaceDown) {
 
+    std::cout << "Stock Pointer: " << stockPointer << " = " << stock[stockPointer].toString(false) << std::endl;
+
     std::cout << "Stock: [ ";
 
     if (!stock.empty()) {
@@ -139,7 +141,7 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
     std::vector<int> availableStock;
     if (!stock.empty()) {
-        availableStock = getAvailableStock();
+        availableStock = getAvailableStock(stockPointer);
     }
 
     Card dest;
@@ -297,8 +299,10 @@ void Klondike::makeMove(Move move) {
             stock.erase(stock.begin() + stockIndex);
             if (stockIndex > 0) {
                 stockPointer = stockIndex - 1;
-            } else {
+            } else if (stock.size() >= deal) {
                 stockPointer = deal - 1;
+            } else {
+                stockPointer = stock.size() - 1;
             }
             break;
         }
@@ -333,29 +337,38 @@ void Klondike::placeCards(Move move, std::vector<Card> cardsToMove) {
     }
 }
 
-std::vector<int> Klondike::getAvailableStock() {
+std::vector<int> Klondike::getAvailableStock(int stockPointer) {
     int n = stock.size();
     int i = stockPointer;
     bool foundDup = false;
     bool reachedEnd = false;
+    bool atEnd = false;
+    int seenEnd = 0;
     std::vector<int> availableCards;
+    availableCards.push_back(i);
+    if (i == n - 1) {
+        i = -1;
+    }
     while (!foundDup) {
-        availableCards.push_back(i);
-        i += deal;
-        if (i >= n - 1) {
-            if (reachedEnd) {
-                if (n >= deal) {
-                    i = deal - 1;
-                } else {
-                    i = n - 1;
-                }
+        if (atEnd) {
+            if (n >= deal) {
+                i = deal - 1;
             } else {
-                reachedEnd = true;
                 i = n - 1;
             }
+            atEnd = false;
+        } else {
+            i += deal;
+            if (i >= n - 1) {
+                i = n - 1;
+                atEnd = true;
+                seenEnd++;
+            }
         }
-        if (reachedEnd && i >= stockPointer) {
+        if (seenEnd > 1) {
             foundDup = true;
+        } else {
+            availableCards.push_back(i);
         }
     }
     return availableCards;
