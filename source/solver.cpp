@@ -17,7 +17,7 @@ bool Solver::run(Klondike game) {
         int bestScore = NOT_SATISFIED_SCORE + 1;
         for (auto const &move: moves) {
             for (auto &h: heuristics) {
-                
+
                 int score = h.run(game, move);
                 if (score >= bestScore) {
                     if (score > bestScore) {
@@ -41,6 +41,17 @@ bool Solver::run(Klondike game) {
 
 std::string Solver::getName() {
     return name;
+}
+
+bool Solver checkSafeMove(Klondike game, Move move) {
+    std::array<int, 2> minFoundation = getFoudationMin(game);
+    bool safeMoveLocation = (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) || (game.getStockPointer() + 1) % game.getDeal() == 0 && move.getEnd()[1] == game.getStock.size());
+    bool safeFoundationMove = move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((move.getCard().getColour() == Colour::RED && move.getCard().getRank() <= minFoundation[1] + 2) || (move.getCard().getColour() == Colour::BLACK && move.getCard().getRank() <= minFoundation[0] + 2));
+    if (safeMoveLocation && safeFoundationMove) {
+        return score;
+    } else {
+        return NOT_SATISFIED_SCORE;
+    }
 }
 
 // bool randomSolve(Klondike game) {
