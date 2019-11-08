@@ -6,40 +6,26 @@ Solver::Solver(std::string name, std::vector<Heuristic> heuristics) : name(name)
 
 bool Solver::run(Klondike game) {
     bool allLegalMoves = false;
-    int maxMoves = 200;
+    int maxMoves = 400;
     std::vector<Move> moves = game.findMoves(allLegalMoves);
-    int i = 0;
+    int movesMade = 0;
     srand(time(NULL));
 
-    while (!moves.empty() && i < maxMoves) {
+    while (!moves.empty() && movesMade < maxMoves) {
         int n = moves.size();
         std::vector<Move> bestMoves = moves;
-        std::vector<int> scores(n);
-        // std::array<int, 2> minFoundation = getFoudationMin(game);
-        // for (int j = 0; j < n; j++) {
-        //     for (auto &h: heuristics) {
-        //         scores[j] = h.getFcn()(game, moves[j], h.getScore());
-        //         if (scores[j] != NOT_SATISFIED_SCORE) {
-        //             break;
-        //         }
-        //     }
-        // }
         int bestScore = NOT_SATISFIED_SCORE + 1;
-        for (int j = 0; j < n; j++) {
+        for (auto const &move: moves) {
             for (auto &h: heuristics) {
                 //std::cout << h.getScore() << '\n';
                 //if (h.getScore() >= bestScore) {
-                    int score = h.run(game, moves[j]);
-                    if (score != NOT_SATISFIED_SCORE) {
-                        //std::cout << score << '\n';
-                    }
+                    int score = h.run(game, move);
                     if (score >= bestScore) {
-                        // std::cout << score << '\n';
                         if (score > bestScore) {
                             bestScore = score;
                             bestMoves = std::vector<Move>();
                         }
-                        bestMoves.push_back(moves[j]);
+                        bestMoves.push_back(move);
                         break;
                     }
                 // } else {
@@ -48,8 +34,9 @@ bool Solver::run(Klondike game) {
             }
         }
         game.makeMove(bestMoves[rand() % bestMoves.size()]);
+        // game.printGame(true);
         moves = game.findMoves(allLegalMoves);
-        i++;
+        movesMade++;
     }
     return game.isWon();
 }

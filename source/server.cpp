@@ -12,7 +12,7 @@ int main(int argc, char const *argv[]) {
 
     auto start = std::chrono::high_resolution_clock::now();
     int wins = 0;
-    int games = 100;
+    int games = 10000;
 
     std::string solvCommand = "../solvitaireHome --type klondike-deal-1 --classify ";
     std::string solvInput = "klondike.json";
@@ -41,13 +41,13 @@ int main(int argc, char const *argv[]) {
     heuristics.push_back(h4);
     heuristics.push_back(h1);
     heuristics.push_back(h2);
-    // solvers.push_back(Solver("All", heuristics));
+    solvers.push_back(Solver("All", heuristics));
 
     heuristics = std::vector<Heuristic>();
     heuristics.push_back(h1);
     heuristics.push_back(h2);
     heuristics.push_back(h3);
-    // solvers.push_back(Solver("No empty unless king", heuristics));
+    solvers.push_back(Solver("No empty unless king", heuristics));
 
     SolverCompare comp(solvers);
 
@@ -56,7 +56,8 @@ int main(int argc, char const *argv[]) {
         std::cout << percent << "%\r";
 
         seed++;
-        Klondike game = Klondike(seed, 1);
+        Klondike game = Klondike(seed, 3);
+        // game.printGame(true);
         comp.runSolvers(game);
 
         if (solvitaire) {

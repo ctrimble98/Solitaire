@@ -26,7 +26,7 @@ Klondike::Klondike(int seed, int deal) : deal(deal) {
     for (int i = 0; i < STOCK_SIZE; i++) {
         stock.push_back(cards[i]);
     }
-    stockPointer = 0;
+    stockPointer = deal - 1;
 
     int cardsPlaced = 0;
     for (int i = 0; i < STACKS; i++) {
@@ -44,8 +44,19 @@ Klondike::Klondike(int seed, int deal) : deal(deal) {
 void Klondike::printGame(bool hideFaceDown) {
 
     std::cout << "Stock: [ ";
-    for (auto const &card: stock) {
-        std::cout << card.toString(hideFaceDown) << ' ';
+
+    if (!stock.empty()) {
+        std::vector<bool> available(stock.size(), false);
+        std::vector<int>  availableStock = getAvailableStock();
+        for (auto const &i: availableStock) {
+            available[i] = true;
+        }
+        for (int i = 0; i < stock.size(); i++) {
+            if (available[i]) {
+                std::cout << '!';
+            }
+            std::cout << stock[i].toString(hideFaceDown) << ' ';
+        }
     }
     std::cout << "]" << std::endl;
 
@@ -126,7 +137,10 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
         }
     }
 
-    std::vector<int> availableStock = getAvailableStock();
+    std::vector<int> availableStock;
+    if (!stock.empty()) {
+        availableStock = getAvailableStock();
+    }
 
     Card dest;
     int i = 0;
@@ -242,7 +256,7 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
         for (int k = 0; k < availableStock.size(); k++) {
             int stockIndex = availableStock[k];
-            if (static_cast<int>(stock[stockIndex].getSuit()) == j && stock[k].getRank() == target) {
+            if (static_cast<int>(stock[stockIndex].getSuit()) == j && stock[stockIndex].getRank() == target) {
                 //tempMove = {static_cast<int>(CardLocation::STOCK), k, static_cast<int>(CardLocation::FOUNDATION), j};
                 moveStart = {static_cast<int>(CardLocation::STOCK), stockIndex, 0};
                 moveEnd = {static_cast<int>(CardLocation::FOUNDATION), j, 0};
@@ -323,15 +337,26 @@ std::vector<int> Klondike::getAvailableStock() {
     int n = stock.size();
     int i = stockPointer;
     bool foundDup = false;
+    bool reachedEnd = false;
     std::vector<int> availableCards;
     while (!foundDup) {
         availableCards.push_back(i);
-        i = (i + deal) % n;
-        if (i == stockPointer) {
-            foundDup = true;
-            std::cout << "/* message */" << '\n';
+        i += deal;
+        if (i >= n - 1) {
+            if (reachedEnd) {
+                if (n >= deal) {
+                    i = deal - 1;
+                } else {
+                    i = n - 1;
+                }
+            } else {
+                reachedEnd = true;
+                i = n - 1;
+            }
         }
-        std::cout << deal << " " << i << " " << stockPointer << '\n';
+        if (reachedEnd && i >= stockPointer) {
+            foundDup = true;
+        }
     }
     return availableCards;
 }
