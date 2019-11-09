@@ -10,8 +10,8 @@ int Heuristic::getScore() {
 
 Heuristic::Heuristic(HeuristicType type, int score) : score(score) {
     switch (type) {
-        case SAFE_FOUNDATION:
-            fcn = safeFoundationHeur;
+        case FOUNDATION:
+            fcn = foundationHeur;
             break;
         case REVEAL_HIDDEN:
             fcn = revealHiddenHeur;
@@ -29,9 +29,8 @@ bool operator> (Heuristic h1, Heuristic h2) {
     return h1.score > h2.score;
 }
 
-int safeFoundationHeur(Klondike game, Move move, int score) {
-    std::array<int, 2> minFoundation = getFoudationMin(game);
-    if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((move.getCard().getColour() == Colour::RED && move.getCard().getRank() <= minFoundation[1] + 2) || (move.getCard().getColour() == Colour::BLACK && move.getCard().getRank() <= minFoundation[0] + 2))) {
+int foundationHeur(Klondike game, Move move, int score) {
+    if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION)) {
         return score;
     } else {
         return NOT_SATISFIED_SCORE;

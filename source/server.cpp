@@ -28,7 +28,7 @@ int main(int argc, char const *argv[]) {
     std::string gameCompText[games];
     bool solvitaire = false;
 
-    Heuristic h1 = Heuristic(HeuristicType::SAFE_FOUNDATION, SAFE_FOUNDATION_SCORE);
+    Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, FOUNDATION_SCORE);
     Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, REVEAL_HIDDEN_SCORE);
     Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, PLAN_REVEAL_HIDDEN_SCORE);
     Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, EMPTY_SPACE_NO_KING_SCORE);

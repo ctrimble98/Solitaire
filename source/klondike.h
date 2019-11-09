@@ -34,6 +34,8 @@ public:
     std::vector<Card> getStock();
     std::array<std::vector<Card>, 7> getTableau();
     std::array<std::stack<Card>, 4> getFoundation();
+    int getDeal();
+    int getStockPointer();
     bool isWon();
 
     Klondike(int seed, int deal);

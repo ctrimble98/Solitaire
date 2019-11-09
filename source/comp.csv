@@ -1,5 +1,5 @@
 10000 games played
 ,	Random,	All,	No empty unless king
-Random,	4.89,	2.58,	2.58
-All,	12.48,	14.79,	0.3
-No empty unless king,	12.61,	0.43,	14.92
+Random,	4.99,	3.01,	3.01
+All,	11.62,	13.6,	0.04
+No empty unless king,	11.67,	0.09,	13.65

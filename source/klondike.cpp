@@ -15,6 +15,13 @@ bool Klondike::isWon() {
     return won;
 }
 
+int Klondike::getDeal() {
+    return deal;
+}
+int Klondike::getStockPointer() {
+    return stockPointer;
+}
+
 Klondike::Klondike(int seed, int deal) : deal(deal) {
 
     std::array<Card, CARD_NO> cards;
@@ -49,7 +56,7 @@ void Klondike::printGame(bool hideFaceDown) {
 
     if (!stock.empty()) {
         std::vector<bool> available(stock.size(), false);
-        std::vector<int>  availableStock = getAvailableStock();
+        std::vector<int>  availableStock = getAvailableStock(stockPointer);
         for (auto const &i: availableStock) {
             available[i] = true;
         }
