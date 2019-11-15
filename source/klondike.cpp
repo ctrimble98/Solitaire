@@ -148,7 +148,10 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
     std::vector<int> availableStock;
     if (!stock.empty()) {
-        availableStock = getAvailableStock(stockPointer);
+        for (size_t i = 0; i < stock.size(); i++) {
+            availableStock.push_back(i);
+        }
+        // availableStock = getAvailableStock(stockPointer);
     }
 
     Card dest;
@@ -203,7 +206,7 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
             for (auto const &card: tableauMovableCards) {
                 if (evalMove(dest, std::get<0>(card))) {
                     moveStart = {static_cast<int>(CardLocation::TABLEAU), std::get<1>(card), std::get<2>(card)};
-                    moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+                    moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, (int)stack.size() - 1};
                     moves.push_back(Move(moveStart, moveEnd, std::get<0>(card)));
                 }
             }
@@ -230,7 +233,7 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
                     if (!foundation[j].empty() && evalMove(dest, foundation[j].top())) {
                         //tempMove = {static_cast<int>(CardLocation::FOUNDATION), j, static_cast<int>(CardLocation::TABLEAU) + i, 0};
                         moveStart = {static_cast<int>(CardLocation::FOUNDATION), 0, j};
-                        moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+                        moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, (int)stack.size() - 1};
                         moves.push_back(Move(moveStart, moveEnd, foundation[j].top()));
                     }
                 }
@@ -267,10 +270,6 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
         i++;
     }
-
-    // for (int j = 0; j < moves.size(); j++) {
-    //     std::cout << "(" << moves[j].getStart()[0] << ", " << moves[j].getStart()[1] << ", " << moves[j].getStart()[2] << ")" << " -> " << "(" << moves[j].getEnd()[0] << ", " << moves[j].getEnd()[1] << ", " << moves[j].getEnd()[2] << ")" << std::endl;
-    // }
 
     if (moves.size() == 0) {
         won = true;

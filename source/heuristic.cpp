@@ -31,6 +31,9 @@ bool operator> (Heuristic h1, Heuristic h2) {
 
 int foundationHeur(Klondike game, Move move, int score) {
     if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION)) {
+        if (getSafeFoundation(game, move)) {
+            return SAFE_SCORE;
+        }
         return score;
     } else {
         return 0;
@@ -39,7 +42,7 @@ int foundationHeur(Klondike game, Move move, int score) {
 
 int revealHiddenHeur(Klondike game, Move move, int score) {
     if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown()) {
-        return score;
+        return score + move.getStart()[2];
     } else {
         return 0;
     }
@@ -59,6 +62,14 @@ int emptyNoKingHeur(Klondike game, Move move, int score) {
     } else {
         return 0;
     }
+}
+
+bool getSafeFoundation(Klondike game, Move move) {
+    std::array<int, 2> minFoundation = getFoudationMin(game);
+    if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((move.getCard().getColour() == Colour::RED && move.getCard().getRank() <= minFoundation[1] + 2) || (move.getCard().getColour() == Colour::BLACK && move.getCard().getRank() <= minFoundation[0] + 2))) {
+        return true;
+    }
+    return false;
 }
 
 // int checkFutureStock(Klondike game, Move move, int score) {

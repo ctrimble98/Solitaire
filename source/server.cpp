@@ -12,7 +12,7 @@ int main(int argc, char const *argv[]) {
 
     auto start = std::chrono::high_resolution_clock::now();
     int wins = 0;
-    int games = 10000;
+    int games = 100000;
 
     std::string solvCommand = "../solvitaireHome --type klondike-deal-1 --classify ";
     std::string solvInput = "klondike.json";
@@ -24,8 +24,6 @@ int main(int argc, char const *argv[]) {
     ofs.open(solvOutFile, std::ofstream::out | std::ofstream::trunc);
     ofs.close();
 
-    bool gameComp[games];
-    std::string gameCompText[games];
     bool solvitaire = false;
 
     Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, FOUNDATION_SCORE);
@@ -56,7 +54,7 @@ int main(int argc, char const *argv[]) {
         std::cout << percent << "%\r";
 
         seed++;
-        Klondike game = Klondike(seed, 3);
+        Klondike game = Klondike(seed, 1);
         // game.printGame(true);
         comp.runSolvers(game);
 
@@ -69,6 +67,8 @@ int main(int argc, char const *argv[]) {
     }
 
     if (solvitaire) {
+        bool gameComp[games];
+        std::string gameCompText[games];
         std::string line;
         std::string result;
 

@@ -14,10 +14,12 @@ public:
 
     Move(std::array<int, 3> start, std::array<int, 3> end, Card card);
 
+    void printMove();
+
 private:
 
     std::array<int, 3> start;
-    std::array<int, 3>  end;
+    std::array<int, 3> end;
     Card card;
 };
 

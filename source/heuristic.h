@@ -4,6 +4,7 @@
 #include <functional>
 #include <limits>
 
+const int SAFE_SCORE = 1000;
 const int FOUNDATION_SCORE = 100;
 const int REVEAL_HIDDEN_SCORE = 200;
 const int PLAN_REVEAL_HIDDEN_SCORE = 50;
@@ -31,6 +32,7 @@ private:
     int score;
 };
 
+bool getSafeFoundation(Klondike game, Move move);
 std::array<int, 2> getFoudationMin(Klondike game);
 int checkFutureHidden(Klondike game, Move move);
 bool checkNothingMove(Klondike game, Move move);
