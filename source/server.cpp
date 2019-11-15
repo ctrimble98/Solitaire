@@ -12,7 +12,7 @@ int main(int argc, char const *argv[]) {
 
     auto start = std::chrono::high_resolution_clock::now();
     int wins = 0;
-    int games = 100000;
+    int games = 10000;
 
     std::string solvCommand = "../solvitaireHome --type klondike-deal-1 --classify ";
     std::string solvInput = "klondike.json";
@@ -51,7 +51,7 @@ int main(int argc, char const *argv[]) {
 
     for (int i = 0; i < games; i++) {
         float percent = static_cast<float>(i*100)/games;
-        std::cout << percent << "%\r";
+        std::cout << percent << "%   \r";
 
         seed++;
         Klondike game = Klondike(seed, 1);
