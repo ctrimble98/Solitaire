@@ -33,7 +33,7 @@ int foundationHeur(Klondike game, Move move, int score) {
     if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION)) {
         return score;
     } else {
-        return NOT_SATISFIED_SCORE;
+        return 0;
     }
 }
 
@@ -41,7 +41,7 @@ int revealHiddenHeur(Klondike game, Move move, int score) {
     if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown()) {
         return score;
     } else {
-        return NOT_SATISFIED_SCORE;
+        return 0;
     }
 }
 
@@ -49,7 +49,7 @@ int planRevealHiddenHeur(Klondike game, Move move, int score) {
     if (move.getStart()[0] != static_cast<int>(CardLocation::TABLEAU) && move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU)) {
         return score + checkFutureHidden(game, move);
     } else {
-        return NOT_SATISFIED_SCORE;
+        return 0;
     }
 }
 
@@ -57,7 +57,7 @@ int emptyNoKingHeur(Klondike game, Move move, int score) {
     if (checkNothingMove(game, move)) {
         return score;
     } else {
-        return NOT_SATISFIED_SCORE;
+        return 0;
     }
 }
 

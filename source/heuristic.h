@@ -4,11 +4,11 @@
 #include <functional>
 #include <limits>
 
-const int FOUNDATION_SCORE = 50;
+const int FOUNDATION_SCORE = 100;
 const int REVEAL_HIDDEN_SCORE = 200;
-const int PLAN_REVEAL_HIDDEN_SCORE = 100;
-const int EMPTY_SPACE_NO_KING_SCORE = -1;
-const int NOT_SATISFIED_SCORE = std::numeric_limits<int>::min();
+const int PLAN_REVEAL_HIDDEN_SCORE = 50;
+const int EMPTY_SPACE_NO_KING_SCORE = -100;
+const int MIN_SCORE = std::numeric_limits<int>::min();
 
 enum HeuristicType {
     FOUNDATION,

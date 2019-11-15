@@ -62,7 +62,9 @@ int main(int argc, char const *argv[]) {
 
         if (solvitaire) {
             game.printJsonToFile(false, solvInput);
-            system((solvCommand + solvInput + " >> " + solvOutFile).c_str());
+            if (system((solvCommand + solvInput + " >> " + solvOutFile).c_str()) == -1) {
+                std::cerr << "Solvitaire error" << '\n';
+            }
         }
     }
 
