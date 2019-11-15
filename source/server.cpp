@@ -37,9 +37,9 @@ int main(int argc, char const *argv[]) {
     std::vector<Heuristic> heuristics;
     heuristics.push_back(h3);
     heuristics.push_back(h4);
-    heuristics.push_back(h1);
+    //heuristics.push_back(h1);
     heuristics.push_back(h2);
-    solvers.push_back(Solver("All", heuristics));
+    //solvers.push_back(Solver("All", heuristics));
 
     heuristics = std::vector<Heuristic>();
     heuristics.push_back(h1);
@@ -54,7 +54,7 @@ int main(int argc, char const *argv[]) {
         std::cout << percent << "%   \r";
 
         seed++;
-        Klondike game = Klondike(seed, 1);
+        Klondike game = Klondike(seed, 3);
         // game.printGame(true);
         comp.runSolvers(game);
 

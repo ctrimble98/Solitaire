@@ -148,10 +148,10 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
     std::vector<int> availableStock;
     if (!stock.empty()) {
-        for (size_t i = 0; i < stock.size(); i++) {
-            availableStock.push_back(i);
-        }
-        // availableStock = getAvailableStock(stockPointer);
+        // for (size_t i = 0; i < stock.size(); i++) {
+        //     availableStock.push_back(i);
+        // }
+        availableStock = getAvailableStock(stockPointer);
     }
 
     Card dest;

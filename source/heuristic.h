@@ -5,9 +5,9 @@
 #include <limits>
 
 const int SAFE_SCORE = 1000;
-const int FOUNDATION_SCORE = 100;
+const int FOUNDATION_SCORE = 50;
 const int REVEAL_HIDDEN_SCORE = 200;
-const int PLAN_REVEAL_HIDDEN_SCORE = 50;
+const int PLAN_REVEAL_HIDDEN_SCORE = 100;
 const int EMPTY_SPACE_NO_KING_SCORE = -100;
 const int MIN_SCORE = std::numeric_limits<int>::min();
 
