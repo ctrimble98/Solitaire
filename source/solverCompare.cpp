@@ -5,13 +5,15 @@ SolverCompare::SolverCompare(std::vector<Solver> solvers): solvers(solvers), gam
     winComp = std::vector<std::vector<int>>(n, std::vector<int>(n, 0));
 }
 
-void SolverCompare::runSolvers(Klondike game) {
+bool SolverCompare::runSolvers(Klondike game, int seed) {
 
     int n = solvers.size();
     std::vector<bool> wins(n, false);
+    bool anyWins = false;
     for (int i = 0; i < n; i++) {
-        if (solvers[i].run(game)) {
+        if (solvers[i].run(game, seed)) {
             wins[i] = true;
+            anyWins = true;
         }
     }
 
@@ -25,6 +27,7 @@ void SolverCompare::runSolvers(Klondike game) {
         }
     }
     gamesPlayed++;
+    return anyWins;
 }
 
 std::string SolverCompare::toString() {
@@ -44,6 +47,7 @@ std::string SolverCompare::toString() {
     for (int i = 0; i < n; i++) {
         winCompString << solvers[i].getName() << ",\t";
         for (int j = 0; j < n; j++) {
+            std::cout << winComp[i][j] << '\n';
             winCompString << 100*(float)winComp[i][j]/gamesPlayed;
             if (j < n - 1) {
                 winCompString << ",\t";
@@ -53,4 +57,8 @@ std::string SolverCompare::toString() {
     }
     // std::cout << winCompString << '\n';
     return winCompString.str();
+}
+
+std::vector<std::vector<int>> SolverCompare::getWinComp() {
+    return winComp;
 }

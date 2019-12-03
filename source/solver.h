@@ -7,7 +7,7 @@
 class Solver {
 public:
 
-    bool run(Klondike game);
+    bool run(Klondike game, int seed);
     std::string getName();
 
     Solver(/*std::function<bool(Klondike)> solvFcn, */std::string name, std::vector<Heuristic> heuristics);

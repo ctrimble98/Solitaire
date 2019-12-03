@@ -1,103 +1,40 @@
 #include "server.h"
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char *argv[]) {
 
-    int seed;
-    if (argc < 2) {
-        seed = time(NULL);
+    int games = 1000;
+    int seed = time(NULL);
+    std::string hFileName = "";
+    bool verify = false;
+    Verifier verifier = Verifier("klondike.json", "solvOut.txt");
+
+    int opt;
+    while((opt = getopt(argc, argv, "g:s:h:v")) != -1) {
+        switch(opt) {
+            case 'g':
+                games = std::stoi(optarg);
+                break;
+            case 's':
+                seed = std::stoi(optarg);
+                break;
+            case 'h':
+                hFileName = optarg;
+                break;
+            case 'v':
+                verify = true;
+                break;
+            case '?':
+                std::cout << "Unknown option: " << optopt << std::endl;
+                break;
+        }
     }
-    else {
-        seed = *argv[1];
-    }
 
-    auto start = std::chrono::high_resolution_clock::now();
-    int wins = 0;
-    int games = 10000;
-
-    std::string solvCommand = "../solvitaireHome --type klondike-deal-1 --classify ";
-    std::string solvInput = "klondike.json";
-    std::string solvOutFile = "solvOut.txt";
-
-    std::ofstream ofs;
-    std::ifstream infile;
-    infile.open(solvOutFile);
-    ofs.open(solvOutFile, std::ofstream::out | std::ofstream::trunc);
-    ofs.close();
-
-    bool solvitaire = false;
-
-    Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, FOUNDATION_SCORE);
-    Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, REVEAL_HIDDEN_SCORE);
-    Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, PLAN_REVEAL_HIDDEN_SCORE);
-    Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, EMPTY_SPACE_NO_KING_SCORE);
-
-    std::vector<Solver> solvers;
-    solvers.push_back(Solver("Random", std::vector<Heuristic>()));
-
-    std::vector<Heuristic> heuristics;
-    heuristics.push_back(h3);
-    heuristics.push_back(h4);
-    //heuristics.push_back(h1);
-    heuristics.push_back(h2);
-    //solvers.push_back(Solver("All", heuristics));
-
-    heuristics = std::vector<Heuristic>();
-    heuristics.push_back(h1);
-    heuristics.push_back(h2);
-    heuristics.push_back(h3);
-    solvers.push_back(Solver("No empty unless king", heuristics));
+    std::vector<Solver> solvers = setSolvers(hFileName);
 
     SolverCompare comp(solvers);
 
-    for (int i = 0; i < games; i++) {
-        float percent = static_cast<float>(i*100)/games;
-        std::cout << percent << "%   \r";
-
-        seed++;
-        Klondike game = Klondike(seed, 3);
-        // game.printGame(true);
-        comp.runSolvers(game);
-
-        if (solvitaire) {
-            game.printJsonToFile(false, solvInput);
-            if (system((solvCommand + solvInput + " >> " + solvOutFile).c_str()) == -1) {
-                std::cerr << "Solvitaire error" << '\n';
-            }
-        }
-    }
-
-    if (solvitaire) {
-        bool gameComp[games];
-        std::string gameCompText[games];
-        std::string line;
-        std::string result;
-
-        infile.seekg(0, std::ios::beg);
-        if (infile.is_open()) {
-            int i = 0;
-            while (getline(infile, line)) {
-                std::istringstream iss(line);
-                std::vector<std::string> results((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
-                if (results.size() > 0) {
-                    gameCompText[i] = results.back();
-                    i++;
-                }
-            }
-            infile.close();
-        }
-
-        int impGamesOne = 0;
-        for (int i = 0; i < games; i++) {
-            std::cout << gameComp[i] << " " << gameCompText[i] << std::endl;
-        }
-        for (int i = 0; i < games; i++) {
-            if (gameComp[i] == true && !gameCompText[i].compare("unsolvable")) {
-                impGamesOne++;
-            }
-        }
-        std::cout << impGamesOne << " unsolvable games were won" << std::endl;
-    }
-
+    auto start = std::chrono::high_resolution_clock::now();
+    comp = runGames(comp, seed, games, verify, verifier);
     auto end = std::chrono::high_resolution_clock::now();
 
     std::ofstream out("comp.csv");
@@ -109,4 +46,49 @@ int main(int argc, char const *argv[]) {
     std::cout << comp.toString();
     std::cout << "(" << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms total time)"<< '\n';
     return 0;
+}
+
+std::vector<Solver> setSolvers(std::string hFileName) {
+
+    std::vector<Solver> solvers;
+
+    Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, FOUNDATION_SCORE);
+    Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, REVEAL_HIDDEN_SCORE);
+    Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, PLAN_REVEAL_HIDDEN_SCORE);
+    Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, EMPTY_SPACE_NO_KING_SCORE);
+
+    solvers.push_back(Solver("Random", std::vector<Heuristic>()));
+
+    std::vector<Heuristic> heuristics;
+
+    // heuristics.push_back(h3);
+    // heuristics.push_back(h4);
+    // heuristics.push_back(h1);
+    // heuristics.push_back(h2);
+    // solvers.push_back(Solver("All", heuristics));
+
+    heuristics = std::vector<Heuristic>();
+    heuristics.push_back(h1);
+    heuristics.push_back(h2);
+    heuristics.push_back(h3);
+    solvers.push_back(Solver("No empty unless king", heuristics));
+
+    return solvers;
+}
+
+SolverCompare runGames(SolverCompare comp, int seed, int games, bool verify, Verifier verifier) {
+
+    for (int i = 0; i < games; i++) {
+        float percent = static_cast<float>(i*100)/games;
+        std::cout << percent << "%   \r";
+
+        seed++;
+        Klondike game = Klondike(seed, 3);
+        bool anyWins = comp.runSolvers(game, seed);
+
+        if (anyWins && verify == true) {
+            verifier.checkGame(game);
+        }
+    }
+    return comp;
 }

@@ -4,12 +4,12 @@ Solver::Solver(std::string name, std::vector<Heuristic> heuristics) : name(name)
     sort(heuristics.begin(), heuristics.end(), std::greater <>());
 }
 
-bool Solver::run(Klondike game) {
+bool Solver::run(Klondike game, int seed) {
     bool allLegalMoves = false;
     int maxMoves = 200;
     std::vector<Move> moves = game.findMoves(allLegalMoves);
     int movesMade = 0;
-    srand(time(NULL));
+    srand(seed);
 
     while (!moves.empty() && movesMade < maxMoves) {
         int n = moves.size();

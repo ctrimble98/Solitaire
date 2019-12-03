@@ -8,11 +8,13 @@
 class SolverCompare {
 public:
 
-    void runSolvers(Klondike game);
+    bool runSolvers(Klondike game, int seed);
 
     SolverCompare(std::vector<Solver> solvers);
 
     std::string toString();
+
+    std::vector<std::vector<int>> getWinComp();
 
 private:
 
