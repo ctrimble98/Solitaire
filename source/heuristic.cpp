@@ -68,7 +68,7 @@ int emptyNoKingHeur(Klondike game, Move move, int score) {
 
 int scoreStockMove(Klondike game, Move move, int score) {
 
-    if (game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && move.getStart()[2] == game.getStock()[(int)game.getStock().size() - 1]) {
+    if (game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && move.getStart()[2] == (int)game.getStock().size() - 1) {
         return score;
     }
     return 0;
@@ -86,14 +86,14 @@ int checkFutureStock(Klondike game, Move move, int score) {
     if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU)) {
         for (int i = 0; i < STACKS; i++) {
             std::vector<Card> stack = game.getTableau()[i];
-            int stackSize = stack.getSize();
+            int stackSize = stack.size();
             Card card = stack.back();
-            std::vector<card> v;
+            std::vector<Card> v;
             if (stackSize >= 2 && stack[stackSize - 2].isFaceDown() && card.getRank() <= 11) {
                 Card targetCard = game.getTableau()[move.getEnd()[1]][move.getEnd()[2]];
                 if (targetCard.getRank() >= card.getRank() + 2) {
                     bool evenSplit = (card.getRank() - targetCard.getRank())% 2 == 0;
-                    bool sameColour = card.getColour() == targetcard.getColour();
+                    bool sameColour = card.getColour() == targetCard.getColour();
                     if (evenSplit == sameColour) {
                         //check stock for all cards in gap between hidden card and move end
                     }
@@ -102,7 +102,7 @@ int checkFutureStock(Klondike game, Move move, int score) {
         }
         return score;
     } else {
-        return NOT_SATISFIED_SCORE;
+        return 0;
     }
 }
 
