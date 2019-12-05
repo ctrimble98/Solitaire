@@ -5,7 +5,7 @@ int main(int argc, char *argv[]) {
     int games = 1000;
     int seed = time(NULL);
     int deal = 3;
-    std::string hFileName = "";
+    std::vector<std::string> hFiles;
     bool verify = false;
     Verifier verifier = Verifier("klondike.json", "solvOut.txt");
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
                 seed = std::stoi(optarg);
                 break;
             case 'h':
-                hFileName = optarg;
+                hFiles.push_back(optarg);
                 break;
             case 'v':
                 verify = true;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     }
     std::cout << std::endl;
 
-    std::vector<Solver> solvers = setSolvers(hFileName);
+    std::vector<Solver> solvers = setSolvers(hFiles);
 
     SolverCompare comp(solvers);
 
@@ -59,18 +59,55 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-std::vector<Solver> setSolvers(std::string hFileName) {
+std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
+
+    int foundScore = FOUNDATION_SCORE;
+    int revealHiddenScore = REVEAL_HIDDEN_SCORE;
+    int planRevealHiddenScore = PLAN_REVEAL_HIDDEN_SCORE;
+    int emptyNoKingScore = EMPTY_SPACE_NO_KING_SCORE;
 
     std::vector<Solver> solvers;
-
-    Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, FOUNDATION_SCORE);
-    Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, REVEAL_HIDDEN_SCORE);
-    Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, PLAN_REVEAL_HIDDEN_SCORE);
-    Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, EMPTY_SPACE_NO_KING_SCORE);
-
-    solvers.push_back(Solver("Random", std::vector<Heuristic>()));
-
     std::vector<Heuristic> heuristics;
+
+    if (!hFiles.empty()) {
+
+        std::cout << "Heuristics from " << hFiles.size() << " files" << std::endl;
+        for (auto &filename: hFiles) {
+
+            std::cout << "Processing " << filename << std::endl;
+
+            std::ifstream ifs(filename);
+            rapidjson::IStreamWrapper isw(ifs);
+            rapidjson::Document document;
+            document.ParseStream(isw);
+
+            foundScore = document["FOUNDATION_SCORE"].GetInt();
+            revealHiddenScore = document["REVEAL_HIDDEN_SCORE"].GetInt();
+            planRevealHiddenScore = document["PLAN_REVEAL_HIDDEN_SCORE"].GetInt();
+            emptyNoKingScore = document["EMPTY_SPACE_NO_KING_SCORE"].GetInt();
+
+            Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, foundScore);
+            Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, revealHiddenScore);
+            Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, planRevealHiddenScore);
+            Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, emptyNoKingScore);
+
+            heuristics = std::vector<Heuristic>();
+            heuristics.push_back(h1);
+            heuristics.push_back(h2);
+            heuristics.push_back(h3);
+            heuristics.push_back(h4);
+            solvers.push_back(Solver(filename, heuristics));
+        }
+
+        return solvers;
+    }
+
+    Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, foundScore);
+    Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, revealHiddenScore);
+    Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, planRevealHiddenScore);
+    Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, emptyNoKingScore);
+
+    //solvers.push_back(Solver("Random", std::vector<Heuristic>()));
 
     // heuristics.push_back(h3);
     // heuristics.push_back(h4);
@@ -82,7 +119,8 @@ std::vector<Solver> setSolvers(std::string hFileName) {
     heuristics.push_back(h1);
     heuristics.push_back(h2);
     heuristics.push_back(h3);
-    solvers.push_back(Solver("No empty unless king", heuristics));
+    heuristics.push_back(h4);
+    solvers.push_back(Solver("All", heuristics));
 
     return solvers;
 }
@@ -91,7 +129,8 @@ SolverCompare runGames(SolverCompare comp, int deal, int seed, int games, bool v
 
     for (int i = 0; i < games; i++) {
         float percent = static_cast<float>(i*100)/games;
-        std::cout << percent << "%   \r";
+        std::cout << "Game " << i << '\n';
+        std::cout << percent << "%   \r" << std::flush;
 
         seed++;
         Klondike game = Klondike(seed, deal);

@@ -3,6 +3,7 @@
 SolverCompare::SolverCompare(std::vector<Solver> solvers): solvers(solvers), gamesPlayed(0) {
     int n = solvers.size();
     winComp = std::vector<std::vector<int>>(n, std::vector<int>(n, 0));
+    std::cout << n << '\n';
 }
 
 bool SolverCompare::runSolvers(Klondike game, int seed) {
