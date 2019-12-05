@@ -50,7 +50,15 @@ Klondike::Klondike(int seed, int deal) : deal(deal) {
 
 void Klondike::printGame(bool hideFaceDown) {
 
+    printStock(hideFaceDown);
+    printTableau(hideFaceDown);
+    printFoundation(hideFaceDown);
+}
+
+void Klondike::printStock(bool hideFaceDown) {
+
     std::cout << "Stock Pointer: " << stockPointer << " = " << stock[stockPointer].toString(false) << std::endl;
+    std::cout << "Stock Size: " << stock.size() << std::endl;
 
     std::cout << "Stock: [ ";
 
@@ -68,6 +76,8 @@ void Klondike::printGame(bool hideFaceDown) {
         }
     }
     std::cout << "]" << std::endl;
+}
+void Klondike::printTableau(bool hideFaceDown) {
 
     std::cout << "Tableau: [ " << std::endl;
 
@@ -79,6 +89,8 @@ void Klondike::printGame(bool hideFaceDown) {
         std::cout << ']' << std::endl;
     }
     std::cout << "]" << std::endl;
+}
+void Klondike::printFoundation(bool hideFaceDown) {
 
     std::cout << "Foundation: [ ";
     for (auto &topCard: foundation) {

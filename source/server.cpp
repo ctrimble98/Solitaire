@@ -4,13 +4,17 @@ int main(int argc, char *argv[]) {
 
     int games = 1000;
     int seed = time(NULL);
+    int deal = 3;
     std::string hFileName = "";
     bool verify = false;
     Verifier verifier = Verifier("klondike.json", "solvOut.txt");
 
     int opt;
-    while((opt = getopt(argc, argv, "g:s:h:v")) != -1) {
+    while((opt = getopt(argc, argv, "d:g:s:h:v")) != -1) {
         switch(opt) {
+            case 'd':
+                deal = std::stoi(optarg);
+                break;
             case 'g':
                 games = std::stoi(optarg);
                 break;
@@ -29,12 +33,19 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    std::cout << "Running solvers with " << deal << " deal klondike on " <<games << " games with seed " << seed;
+
+    if (verify) {
+        std::cout << " with solvitaire verification";
+    }
+    std::cout << std::endl;
+
     std::vector<Solver> solvers = setSolvers(hFileName);
 
     SolverCompare comp(solvers);
 
     auto start = std::chrono::high_resolution_clock::now();
-    comp = runGames(comp, seed, games, verify, verifier);
+    comp = runGames(comp, deal, seed, games, verify, verifier);
     auto end = std::chrono::high_resolution_clock::now();
 
     std::ofstream out("comp.csv");
@@ -76,14 +87,14 @@ std::vector<Solver> setSolvers(std::string hFileName) {
     return solvers;
 }
 
-SolverCompare runGames(SolverCompare comp, int seed, int games, bool verify, Verifier verifier) {
+SolverCompare runGames(SolverCompare comp, int deal, int seed, int games, bool verify, Verifier verifier) {
 
     for (int i = 0; i < games; i++) {
         float percent = static_cast<float>(i*100)/games;
         std::cout << percent << "%   \r";
 
         seed++;
-        Klondike game = Klondike(seed, 3);
+        Klondike game = Klondike(seed, deal);
         bool anyWins = comp.runSolvers(game, seed);
 
         if (anyWins && verify == true) {

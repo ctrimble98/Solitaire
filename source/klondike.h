@@ -46,6 +46,10 @@ public:
     std::vector<int> getAvailableStock(int stockPointer);
 
     void printGame(bool hideFaceDown);
+    void printStock(bool hideFaceDown);
+    void printTableau(bool hideFaceDown);
+    void printFoundation(bool hideFaceDown);
+
     void printJsonToFile(bool hideFaceDown, std::string file);
 
 private:

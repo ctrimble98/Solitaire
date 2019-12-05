@@ -60,6 +60,23 @@ bool checkSafeMove(Klondike game, Move move) {
     }
     bool safeMoveEnd = getSafeFoundation(game, move);
     if (safeMoveStart && safeMoveEnd) {
+        // std::cout << "Foundation: [ ";
+        // for (auto &topCard: game.getFoundation()) {
+        //     if (!topCard.empty()) {
+        //         std::cout << topCard.top().toString(true) << ' ';
+        //     }
+        //     else {
+        //         std::cout << "X ";
+        //     }
+        // }
+        // std::cout << "]" << std::endl;
+        // game.printGame(true);
+        // game.printStock(true);
+        // game.printTableau(true);
+        // game.printFoundation(true);
+        // move.printMove();
+        // std::cout << '\n';
+
         return true;
     }
     return false;

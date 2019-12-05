@@ -77,6 +77,9 @@ int scoreStockMove(Klondike game, Move move, int score) {
 bool getSafeFoundation(Klondike game, Move move) {
     std::array<int, 2> minFoundation = getFoudationMin(game);
     if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((move.getCard().getColour() == Colour::RED && move.getCard().getRank() <= minFoundation[1] + 2) || (move.getCard().getColour() == Colour::BLACK && move.getCard().getRank() <= minFoundation[0] + 2))) {
+        // if (move.getCard().getRank() > 2) {
+        //     move.printMove();
+        // }
         return true;
     }
     return false;
@@ -108,17 +111,21 @@ int checkFutureStock(Klondike game, Move move, int score) {
 
 std::array<int, 2> getFoudationMin(Klondike game) {
     std::array<std::stack<Card>, 4> foundation = game.getFoundation();
-    std::array<int, 2> min = {0,0};
+    std::array<int, 2> min = {CARDS_PER_SUIT, CARDS_PER_SUIT};
     int i = 0;
     while (i < 2) {
-        if (!foundation[i].empty() && foundation[i].top().getRank() < min[0]) {
+        if (foundation[i].empty()) {
+            min[0] = 0;
+        } else if (foundation[i].top().getRank() < min[0]) {
             min[0] = foundation[i].top().getRank();
         }
         i++;
     }
 
     while (i < 4) {
-        if (!foundation[i].empty() && foundation[i].top().getRank() < min[1]) {
+        if (foundation[i].empty()) {
+            min[1] = 0;
+        } else if (foundation[i].top().getRank() < min[1]) {
             min[1] = foundation[i].top().getRank();
         }
         i++;

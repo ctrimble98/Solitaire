@@ -18,6 +18,6 @@
 #include "verifier.h"
 
 std::vector<Solver> setSolvers(std::string hFileName);
-SolverCompare runGames(SolverCompare comp, int seed, int games, bool verify, Verifier verifier);
+SolverCompare runGames(SolverCompare comp, int deal, int seed, int games, bool verify, Verifier verifier);
 
 #endif
