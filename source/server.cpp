@@ -129,7 +129,6 @@ SolverCompare runGames(SolverCompare comp, int deal, int seed, int games, bool v
 
     for (int i = 0; i < games; i++) {
         float percent = static_cast<float>(i*100)/games;
-        std::cout << "Game " << i << '\n';
         std::cout << percent << "%   \r" << std::flush;
 
         seed++;
@@ -140,5 +139,6 @@ SolverCompare runGames(SolverCompare comp, int deal, int seed, int games, bool v
             verifier.checkGame(game);
         }
     }
+    std::cout << "            " << std::endl;
     return comp;
 }

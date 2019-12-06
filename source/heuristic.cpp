@@ -49,11 +49,15 @@ int revealHiddenHeur(Klondike game, Move move, int score) {
 }
 
 int planRevealHiddenHeur(Klondike game, Move move, int score) {
-    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU)) {
-        int tempScore = checkFutureHidden(game, move);
+    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getEnd()[2] > 0) {
+        int tempScore = checkFutureStock(game, move);
         if (tempScore > 0) {
-            return score + tempScore;
+            return score - tempScore;
         }
+        // int tempScore = checkFutureHidden(game, move);
+        // if (tempScore > 0) {
+        //     return score + tempScore;
+        // }
     }
     return 0;
 }
@@ -77,36 +81,62 @@ int scoreStockMove(Klondike game, Move move, int score) {
 bool getSafeFoundation(Klondike game, Move move) {
     std::array<int, 2> minFoundation = getFoudationMin(game);
     if (move.getEnd()[0] == static_cast<int>(CardLocation::FOUNDATION) && ((move.getCard().getColour() == Colour::RED && move.getCard().getRank() <= minFoundation[1] + 2) || (move.getCard().getColour() == Colour::BLACK && move.getCard().getRank() <= minFoundation[0] + 2))) {
-        // if (move.getCard().getRank() > 2) {
-        //     move.printMove();
-        // }
         return true;
     }
     return false;
 }
 
-int checkFutureStock(Klondike game, Move move, int score) {
+int checkFutureStock(Klondike game, Move move) {
     if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU)) {
+        int minDiff = 13;
+        Card destCard = game.getTableau()[move.getEnd()[1]][move.getEnd()[2] - 1];
         for (int i = 0; i < STACKS; i++) {
             std::vector<Card> stack = game.getTableau()[i];
+            if (stack.empty()) {
+                continue;
+            }
             int stackSize = stack.size();
             Card card = stack.back();
             std::vector<Card> v;
             if (stackSize >= 2 && stack[stackSize - 2].isFaceDown() && card.getRank() <= 11) {
-                Card targetCard = game.getTableau()[move.getEnd()[1]][move.getEnd()[2]];
-                if (targetCard.getRank() >= card.getRank() + 2) {
-                    bool evenSplit = (card.getRank() - targetCard.getRank())% 2 == 0;
-                    bool sameColour = card.getColour() == targetCard.getColour();
-                    if (evenSplit == sameColour) {
-                        //check stock for all cards in gap between hidden card and move end
+                if (destCard.getRank() >= card.getRank() + 2) {
+                    int diff = destCard.getRank() - card.getRank();
+                    if (diff < minDiff) {
+                        bool evenSplit = diff% 2 == 0;
+                        bool sameColour = card.getColour() == destCard.getColour();
+                        if (evenSplit == sameColour) {
+                            minDiff = diff;
+                        }
                     }
                 }
             }
         }
-        return score;
-    } else {
-        return 0;
+        if (minDiff < 13) {
+            bool foundAll = true;
+            int target = 2;
+            while (target < minDiff) {
+                Colour targetColour = (target % 2 == 0) == (destCard.getColour() == Colour::RED) ? Colour::RED : Colour::BLACK;
+                if (!findCardInStock(game, destCard.getRank() - target, targetColour)) {
+                    foundAll = false;
+                    break;
+                }
+                target++;
+            }
+            if (foundAll) {
+                return minDiff;
+            }
+        }
     }
+    return 0;
+}
+
+bool findCardInStock(Klondike game, int rank, Colour colour) {
+    for (auto &card: game.getStock()) {
+        if (card.getRank() == rank && card.getColour() == colour) {
+            return true;
+        }
+    }
+    return false;
 }
 
 std::array<int, 2> getFoudationMin(Klondike game) {

@@ -42,4 +42,7 @@ int revealHiddenHeur(Klondike game, Move move, int score);
 int planRevealHiddenHeur(Klondike game, Move move, int score);
 int emptyNoKingHeur(Klondike game, Move move, int score);
 
+int checkFutureStock(Klondike game, Move move);
+bool findCardInStock(Klondike game, int rank, Colour colour);
+
 #endif
