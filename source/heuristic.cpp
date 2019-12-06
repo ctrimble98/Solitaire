@@ -197,13 +197,13 @@ bool checkNothingMove(Klondike game, Move move) {
     return false;
 }
 
-// bool checkStockMoves(Klondike game, int stockIndex) {
-//     std::vector<int> availableStock = game.getAvailableStock(stockIndex);
-//     for (int i = 0; i < availableStock.size(); i++) {
-//         int stockIndex = availableStock[i];
-//         moveStart = {static_cast<int>(CardLocation::STOCK), stockIndex, 0};
-//         moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
-//         Move move(moveStart, moveEnd, stock[stockIndex]);
-//         if (safeFoundationHeur(game, move))
-//     }
-// }
+bool checkStockMoves(Klondike game, int stockIndex) {
+    std::vector<int> availableStock = game.getAvailableStock(stockIndex);
+    for (int i = 0; i < availableStock.size(); i++) {
+        int stockIndex = availableStock[i];
+        moveStart = {static_cast<int>(CardLocation::STOCK), stockIndex, 0};
+        moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
+        Move move(moveStart, moveEnd, stock[stockIndex]);
+        if (safeFoundationHeur(game, move))
+    }
+}

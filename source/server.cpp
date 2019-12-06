@@ -139,6 +139,6 @@ SolverCompare runGames(SolverCompare comp, int deal, int seed, int games, bool v
             verifier.checkGame(game);
         }
     }
-    std::cout << "            " << std::endl;
+    std::cout << "            \r" << std::flush;
     return comp;
 }

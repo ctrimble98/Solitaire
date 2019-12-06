@@ -47,7 +47,6 @@ std::string SolverCompare::toString() {
     for (int i = 0; i < n; i++) {
         winCompString << solvers[i].getName() << ",\t";
         for (int j = 0; j < n; j++) {
-            std::cout << winComp[i][j] << '\n';
             winCompString << 100*(float)winComp[i][j]/gamesPlayed;
             if (j < n - 1) {
                 winCompString << ",\t";
@@ -55,7 +54,6 @@ std::string SolverCompare::toString() {
         }
         winCompString << "\n";
     }
-    // std::cout << winCompString << '\n';
     return winCompString.str();
 }
 
