@@ -66,12 +66,16 @@ int emptyNoKingHeur(Klondike game, Move move, int score) {
     }
 }
 
-int scoreStockMove(Klondike game, Move move, int score) {
+float scoreStockMove(Klondike game, Move move) {
 
-    if (game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && move.getStart()[2] == (int)game.getStock().size() - 1) {
-        return score;
+    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK)) {
+        if (game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[2] == (int)game.getStock().size() - 1) {
+            return 1;
+        }/* else {
+            return 0.5*move.getStart()[2]/game.getStock().size();
+        }*/
     }
-    return 0;
+    return 1;
 }
 
 bool getSafeFoundation(Klondike game, Move move) {
