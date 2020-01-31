@@ -22,6 +22,7 @@ int Klondike::getStockPointer() {
     return stockPointer;
 }
 
+// Function to set up a game of Klondike
 Klondike::Klondike(int seed, int deal) : deal(deal) {
 
     std::array<Card, CARD_NO> cards;
@@ -90,6 +91,7 @@ void Klondike::printTableau(bool hideFaceDown) {
     }
     std::cout << "]" << std::endl;
 }
+
 void Klondike::printFoundation(bool hideFaceDown) {
 
     std::cout << "Foundation: [ ";
@@ -160,11 +162,30 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
 
     std::vector<int> availableStock;
     if (!stock.empty()) {
-        // for (size_t i = 0; i < stock.size(); i++) {
-        //     availableStock.push_back(i);
-        // }
         availableStock = getAvailableStock(stockPointer);
     }
+
+    Card dest;
+    int i = 0;
+    std::array<int, 3> moveStart;
+    std::array<int, 3> moveEnd;
+
+    moves = findTableauMoves(moves, tableauMovableCards, availableStock, allLegalMoves);
+    moves = findFoundationMoves(moves, tableauMovableCards, availableStock, allLegalMoves);
+
+    if (moves.size() == 0) {
+        won = true;
+        for (auto &topCard: foundation) {
+            if (topCard.empty() || topCard.top().getRank() != 13) {
+                won = false;
+            }
+        }
+    }
+
+    return moves;
+}
+
+std::vector<Move> Klondike::findTableauMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves) {
 
     Card dest;
     int i = 0;
@@ -223,17 +244,9 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
                 }
             }
 
-            // for (int j = 0; j < STACKS; j++) {
-            //     if (evalMove(dest, tableau[j].back())) {
-            //         tempMove = {static_cast<int>(CardLocation::TABLEAU) + j, tableau[j].size() - 1, static_cast<int>(CardLocation::TABLEAU) + i, stack.size() - 1};
-            //         moves.push_back(tempMove);
-            //     }
-            // }
-
             for (size_t j = 0; j < availableStock.size(); j++) {
                 int stockIndex = availableStock[j];
                 if (evalMove(dest, stock[stockIndex])) {
-                    //tempMove = {static_cast<int>(CardLocation::STOCK), j, static_cast<int>(CardLocation::TABLEAU) + i, stack.size() - 1};
                     moveStart = {static_cast<int>(CardLocation::STOCK), 0, stockIndex};
                     moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, (int)stack.size() - 1};
                     moves.push_back(Move(moveStart, moveEnd, stock[stockIndex]));
@@ -243,7 +256,6 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
             if (allLegalMoves) {
                 for (int j = 0; j < 4; j++) {
                     if (!foundation[j].empty() && evalMove(dest, foundation[j].top())) {
-                        //tempMove = {static_cast<int>(CardLocation::FOUNDATION), j, static_cast<int>(CardLocation::TABLEAU) + i, 0};
                         moveStart = {static_cast<int>(CardLocation::FOUNDATION), 0, j};
                         moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, (int)stack.size() - 1};
                         moves.push_back(Move(moveStart, moveEnd, foundation[j].top()));
@@ -254,40 +266,36 @@ std::vector<Move> Klondike::findMoves(bool allLegalMoves) {
         i++;
     }
 
-    for (int j = 0; j < 4; j++) {
+    return moves;
+}
+
+std::vector<Move> Klondike::findFoundationMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves) {
+
+    Card dest;
+    int i = 0;
+    std::array<int, 3> moveStart;
+    std::array<int, 3> moveEnd;
+
+    for (int i = 0; i < 4; i++) {
 
         int target = 1;
-        if (!foundation[j].empty()) {
-            target = foundation[j].top().getRank() + 1;
+        if (!foundation[i].empty()) {
+            target = foundation[i].top().getRank() + 1;
         }
-        for (int k = 0; k < STACKS; k++) {
-            if (tableau[k].size() > 0 && static_cast<int>(tableau[k].back().getSuit()) == j && tableau[k].back().getRank() == target) {
-
-                //tempMove = {static_cast<int>(CardLocation::TABLEAU) + k, tableau[k].size() - 1, static_cast<int>(CardLocation::FOUNDATION), j};
-                moveStart = {static_cast<int>(CardLocation::TABLEAU), k, (int)tableau[k].size() - 1};
-                moveEnd = {static_cast<int>(CardLocation::FOUNDATION), 0, j};
-                moves.push_back(Move(moveStart, moveEnd, tableau[k].back()));
+        for (int j = 0; j < STACKS; j++) {
+            if (tableau[j].size() > 0 && static_cast<int>(tableau[j].back().getSuit()) == i && tableau[j].back().getRank() == target) {
+                moveStart = {static_cast<int>(CardLocation::TABLEAU), j, (int)tableau[j].size() - 1};
+                moveEnd = {static_cast<int>(CardLocation::FOUNDATION), 0, i};
+                moves.push_back(Move(moveStart, moveEnd, tableau[j].back()));
             }
         }
 
-        for (size_t k = 0; k < availableStock.size(); k++) {
-            int stockIndex = availableStock[k];
-            if (static_cast<int>(stock[stockIndex].getSuit()) == j && stock[stockIndex].getRank() == target) {
-                //tempMove = {static_cast<int>(CardLocation::STOCK), k, static_cast<int>(CardLocation::FOUNDATION), j};
+        for (size_t j = 0; j < availableStock.size(); j++) {
+            int stockIndex = availableStock[j];
+            if (static_cast<int>(stock[stockIndex].getSuit()) == i && stock[stockIndex].getRank() == target) {
                 moveStart = {static_cast<int>(CardLocation::STOCK), 0, stockIndex};
-                moveEnd = {static_cast<int>(CardLocation::FOUNDATION), 0, j};
+                moveEnd = {static_cast<int>(CardLocation::FOUNDATION), 0, i};
                 moves.push_back(Move(moveStart, moveEnd, stock[stockIndex]));
-            }
-        }
-
-        i++;
-    }
-
-    if (moves.size() == 0) {
-        won = true;
-        for (auto &topCard: foundation) {
-            if (topCard.empty() || topCard.top().getRank() != 13) {
-                won = false;
             }
         }
     }

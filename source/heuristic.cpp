@@ -54,10 +54,6 @@ int planRevealHiddenHeur(Klondike game, Move move, int score) {
         if (tempScore > 0) {
             return score - tempScore;
         }
-        // int tempScore = checkFutureHidden(game, move);
-        // if (tempScore > 0) {
-        //     return score + tempScore;
-        // }
     }
     return 0;
 }
@@ -195,17 +191,4 @@ bool checkNothingMove(Klondike game, Move move) {
         return true;
     }
     return false;
-}
-
-bool checkStockMoves(Klondike game, int stockIndex) {
-    // std::vector<int> availableStock = game.getAvailableStock(stockIndex);
-    // for (int i = 0; i < availableStock.size(); i++) {
-    //     int stockIndex = availableStock[i];
-    //     moveStart = {static_cast<int>(CardLocation::STOCK), stockIndex, 0};
-    //     moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
-    //     Move move(moveStart, moveEnd, stock[stockIndex]);
-    //     if (safeFoundationHeur(game, move)) {
-    //
-    //     }
-    // }
 }

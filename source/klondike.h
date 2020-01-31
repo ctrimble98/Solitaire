@@ -41,6 +41,9 @@ public:
     Klondike(int seed, int deal);
 
     std::vector<Move> findMoves(bool allLegalMoves);
+    std::vector<Move> findTableauMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves);
+    std::vector<Move> findFoundationMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves);
+
     void makeMove(Move move);
     void placeCards(Move move, std::vector<Card> cardsToMove);
     std::vector<int> getAvailableStock(int stockPointer);
