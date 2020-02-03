@@ -22,6 +22,18 @@ Heuristic::Heuristic(HeuristicType type, int score) : score(score) {
         case EMPTY_SPACE_NO_KING:
             fcn = emptyNoKingHeur;
             break;
+        case STOCK_SAFE:
+            fcn = scoreSafeStockMove;
+            break;
+        case STOCK_DISTANCE:
+            fcn = scoreStockDistanceMove;
+            break;
+        case SMOOTH:
+            fcn = scoreSmoothMove;
+            break;
+        case TABLEAU:
+            fcn = scoreTableauMove;
+            break;
     }
 }
 
@@ -66,16 +78,33 @@ int emptyNoKingHeur(Klondike game, Move move, int score) {
     }
 }
 
-float scoreStockMove(Klondike game, Move move) {
+int scoreTableauMove(Klondike game, Move move, int score) {
+    if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU)) {
+        return score;
+    }
+    return 0;
+}
 
-    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK)) {
-        if (game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[2] == (int)game.getStock().size() - 1) {
-            return 1;
-        }/* else {
-            return 0.5*move.getStart()[2]/game.getStock().size();
-        }*/
+int scoreSafeStockMove(Klondike game, Move move, int score) {
+
+    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[2] == (int)game.getStock().size() - 1) {
+        return score;
+    }
+    return 0;
+}
+
+int scoreStockDistanceMove(Klondike game, Move move, int score) {
+    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && !(move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[2] == (int)game.getStock().size() - 1)) {
+        return score * (game.getStockPointer()/(int)game.getStock().size());
     }
     return 1;
+}
+
+int scoreSmoothMove(Klondike game, Move move, int score) {
+    if (move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getEnd()[2] >= 2 && game.getTableau()[move.getEnd()[1]][move.getEnd()[2] - 1].getSuit() == move.getCard().getSuit()) {
+        return score;
+    }
+    return 0;
 }
 
 bool getSafeFoundation(Klondike game, Move move) {

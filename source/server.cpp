@@ -65,6 +65,10 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
     int revealHiddenScore = REVEAL_HIDDEN_SCORE;
     int planRevealHiddenScore = PLAN_REVEAL_HIDDEN_SCORE;
     int emptyNoKingScore = EMPTY_SPACE_NO_KING_SCORE;
+    int safeStockScore = STOCK_SAFE_SCORE;
+    int tableauScore = TABLEAU_SCORE;
+    int stockDistanceScore = STOCK_DISTANCE_SCORE;
+    int smoothScore = SMOOTH_SCORE;
 
     std::vector<Solver> solvers;
     std::vector<Heuristic> heuristics;
@@ -80,22 +84,35 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
             rapidjson::IStreamWrapper isw(ifs);
             rapidjson::Document document;
             document.ParseStream(isw);
+            // std::cout << foundScore << " " << revealHiddenScore << " " << planRevealHiddenScore << " " << emptyNoKingScore << " " << safeStockScore << " " << tableauScore << " " << stockDistanceScore << " " << smoothScore << '\n';
 
             foundScore = document["FOUNDATION_SCORE"].GetInt();
             revealHiddenScore = document["REVEAL_HIDDEN_SCORE"].GetInt();
             planRevealHiddenScore = document["PLAN_REVEAL_HIDDEN_SCORE"].GetInt();
             emptyNoKingScore = document["EMPTY_SPACE_NO_KING_SCORE"].GetInt();
+            safeStockScore = document["STOCK_SAFE"].GetInt();
+            tableauScore = document["TABLEAU"].GetInt();
+            stockDistanceScore = document["STOCK_DISTANCE"].GetInt();
+            smoothScore = document["SMOOTH"].GetInt();
 
             Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, foundScore);
             Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, revealHiddenScore);
             Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, planRevealHiddenScore);
             Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, emptyNoKingScore);
-
+            Heuristic h5 = Heuristic(HeuristicType::STOCK_SAFE, safeStockScore);
+            Heuristic h6 = Heuristic(HeuristicType::TABLEAU, tableauScore);
+            Heuristic h7 = Heuristic(HeuristicType::STOCK_DISTANCE, stockDistanceScore);
+            Heuristic h8 = Heuristic(HeuristicType::SMOOTH, smoothScore);
+            // std::cout << foundScore << " " << revealHiddenScore << " " << planRevealHiddenScore << " " << emptyNoKingScore << " " << safeStockScore << " " << tableauScore << " " << stockDistanceScore << " " << smoothScore << '\n';
             heuristics = std::vector<Heuristic>();
             heuristics.push_back(h1);
             heuristics.push_back(h2);
             heuristics.push_back(h3);
             heuristics.push_back(h4);
+            heuristics.push_back(h5);
+            heuristics.push_back(h6);
+            heuristics.push_back(h7);
+            heuristics.push_back(h8);
             solvers.push_back(Solver(filename, heuristics));
         }
 
@@ -106,6 +123,10 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
     Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, revealHiddenScore);
     Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, planRevealHiddenScore);
     Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, emptyNoKingScore);
+    Heuristic h5 = Heuristic(HeuristicType::STOCK_SAFE, safeStockScore);
+    Heuristic h6 = Heuristic(HeuristicType::TABLEAU, tableauScore);
+    Heuristic h7 = Heuristic(HeuristicType::STOCK_DISTANCE, stockDistanceScore);
+    Heuristic h8 = Heuristic(HeuristicType::SMOOTH, smoothScore);
 
     //solvers.push_back(Solver("Random", std::vector<Heuristic>()));
 
@@ -120,6 +141,10 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
     heuristics.push_back(h2);
     heuristics.push_back(h3);
     heuristics.push_back(h4);
+    heuristics.push_back(h5);
+    // heuristics.push_back(h6);
+    // heuristics.push_back(h7);
+    heuristics.push_back(h8);
     solvers.push_back(Solver("All", heuristics));
 
     return solvers;

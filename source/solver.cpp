@@ -26,7 +26,6 @@ bool Solver::run(Klondike game, int seed) {
                 //Need to default score to zero and make additive. Also remove bad moves
                 score += h.run(game, move);
             }
-            score *= scoreStockMove(game, move);
             if (score >= bestScore) {
                 if (score > bestScore) {
                     bestScore = score;
