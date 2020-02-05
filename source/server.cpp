@@ -142,8 +142,8 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
     heuristics.push_back(h3);
     heuristics.push_back(h4);
     heuristics.push_back(h5);
-    // heuristics.push_back(h6);
-    // heuristics.push_back(h7);
+    heuristics.push_back(h6);
+    heuristics.push_back(h7);
     heuristics.push_back(h8);
     solvers.push_back(Solver("All", heuristics));
 

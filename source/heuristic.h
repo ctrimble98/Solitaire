@@ -9,11 +9,11 @@ const int FOUNDATION_SCORE = 0;
 const int REVEAL_HIDDEN_SCORE = 20;
 const int PLAN_REVEAL_HIDDEN_SCORE = 10;
 const int EMPTY_SPACE_NO_KING_SCORE = -10;
-const int STOCK_SAFE_SCORE = 50;
-const int STOCK_MOD_DEAL_SCORE = 10;
-const int STOCK_DISTANCE_SCORE = 20;
-const int SMOOTH_SCORE = 1;
-const int TABLEAU_SCORE = 50;
+const int STOCK_SAFE_SCORE = 0;
+const int STOCK_MOD_DEAL_SCORE = 0;
+const int STOCK_DISTANCE_SCORE = 0;
+const int SMOOTH_SCORE = 0;
+const int TABLEAU_SCORE = 0;
 const int MIN_SCORE = std::numeric_limits<int>::min();
 
 enum HeuristicType {

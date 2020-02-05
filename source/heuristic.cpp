@@ -97,7 +97,7 @@ int scoreStockDistanceMove(Klondike game, Move move, int score) {
     if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && !(move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[2] == (int)game.getStock().size() - 1)) {
         return score * (game.getStockPointer()/(int)game.getStock().size());
     }
-    return 1;
+    return 0;
 }
 
 int scoreSmoothMove(Klondike game, Move move, int score) {
