@@ -94,14 +94,14 @@ int scoreSafeStockMove(Klondike game, Move move, int score) {
 }
 
 int scoreStockDistanceMove(Klondike game, Move move, int score) {
-    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && !(move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[2] == (int)game.getStock().size() - 1)) {
-        return score * (game.getStockPointer()/(int)game.getStock().size());
+    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && game.getStockPointer() + 1 % game.getDeal() == 0 && move.getStart()[2] != (int)game.getStock().size() - 1) {
+        return score * move.getStart()[2]/(int)game.getStock().size();
     }
     return 0;
 }
 
 int scoreSmoothMove(Klondike game, Move move, int score) {
-    if (move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getEnd()[2] >= 2 && game.getTableau()[move.getEnd()[1]][move.getEnd()[2] - 1].getSuit() == move.getCard().getSuit()) {
+    if (move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getEnd()[2] >= 2 && game.getTableau()[move.getEnd()[1]][move.getEnd()[2] - 2].getSuit() == move.getCard().getSuit()) {
         return score;
     }
     return 0;
@@ -204,7 +204,16 @@ int checkFutureHidden(Klondike game, Move move) {
 
 bool checkNothingMove(Klondike game, Move move) {
 
-    if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] == 0 && move.getCard().getRank() != 13) {
+    if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] == 0) {
+
+        //If the move is just shifting a king then it is a nothing move
+        if (move.getCard().getRank() == 13) {
+            if (move.getEnd()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getEnd()[2] == 0) {
+                return true;
+            }
+            return false;
+        }
+
         int n = game.getStock().size();
         for (int i = 0; i < n; i++) {
             if (game.getStock()[i].getRank() == 13) {
