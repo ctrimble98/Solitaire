@@ -26,6 +26,7 @@ public:
     Colour getColour() const;
     bool isFaceDown() const;
 
+    Card(Card card);
     Card();
     Card(int value);
     Card(Suit suit, int rank);

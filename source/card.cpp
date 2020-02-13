@@ -1,5 +1,11 @@
 #include "card.h"
 
+Card::Card(Card card) :
+        m_suit(card.getSuit()),
+        m_rank(card.getRank()),
+        m_faceDown(card.isFaceDown()),
+        m_colour(card.getColour()) {}
+
 Card::Card() {
     m_suit = Suit::HEARTS;
     m_rank = 1;

@@ -12,6 +12,9 @@ Card Move::getCard() {
     return card;
 }
 
+Move::Move(Move &move) : start(move.getStart()), end(move.getEnd()), card(move.getCard()) {
+}
+
 Move::Move(std::array<int, 3> start, std::array<int, 3> end, Card card) : start(start), end(end), card(card) {
 }
 

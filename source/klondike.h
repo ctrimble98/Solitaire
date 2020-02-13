@@ -39,6 +39,7 @@ public:
     bool isWon();
 
     Klondike(int seed, int deal);
+    Klondike(Klondike game);
 
     std::vector<Move> findMoves(bool allLegalMoves);
     std::vector<Move> findTableauMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves);
