@@ -19,9 +19,9 @@ private:
     std::vector<Heuristic> heuristics;
 };
 
-bool checkSafeMove(Klondike game, Move move);
+bool checkSafeMove(Klondike game, Move move, bool print);
 
-bool dfs(Klondike game, int depth);
+bool dfs(Klondike game, Move move, int depth);
 
 // bool randomSolve(Klondike game);
 // bool weightedSolveAll(Klondike game);

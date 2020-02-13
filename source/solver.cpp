@@ -53,12 +53,18 @@ std::string Solver::getName() {
     return name;
 }
 
-bool checkSafeMove(Klondike game, Move move) {
+bool checkSafeMove(Klondike game, Move move, bool print) {
     bool safeMoveStart = true;
     if (game.getDeal() > 1) {
         safeMoveStart = (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) || (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && (game.getStockPointer() + 1) % game.getDeal() == 0 && move.getEnd()[2] == (signed)game.getStock().size() - 1));
     }
     bool safeMoveEnd = getSafeFoundation(game, move);
+    if (print) {
+        std::cout << '\n';
+        move.printMove();
+        std::cout << " " << safeMoveStart << " " << safeMoveEnd << '\n';
+        std::cout << '\n';
+    }
     if (safeMoveStart && safeMoveEnd) {
 
         return true;
@@ -131,26 +137,39 @@ bool checkSafeMove(Klondike game, Move move) {
 
 bool Solver::run(Klondike game, int seed) {
     bool allLegalMoves = false;
-    int maxMoves = 200;
+    int maxMoves = 20;
     std::vector<Move> moves = game.findMoves(allLegalMoves);
     int movesMade = 0;
     srand(seed);
 
     while (!moves.empty() && movesMade < maxMoves) {
 
+        for (auto &move: moves) {
+            move.printMove();
+        }
+        game.printGame(true);
+
         bool madeMove = false;
-        for (auto const &move: moves) {
-            if (checkSafeMove(game, move) || (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown())) {
+        for (auto &move: moves) {
+            if (checkSafeMove(game, move, true) || (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown())) {
                 game.makeMove(move);
                 madeMove = true;
+
+                std::cout << "Chosen Move" << std::endl;
+                move.printMove();
+                std::cout << std::endl;
+                break;
             }
         }
 
         if (!madeMove) {
-            for (auto const &move: moves) {
-                if (dfs(Klondike(game), 0)) {
+            for (auto &move: moves) {
+                if (dfs(Klondike(game), move, 0)) {
                     game.makeMove(move);
                     madeMove = true;
+                    std::cout << "Chosen Move" << std::endl;
+                    move.printMove();
+                    std::cout << std::endl;
                     break;
                 }
             }
@@ -159,6 +178,9 @@ bool Solver::run(Klondike game, int seed) {
         if (!madeMove) {
             Move move = moves[rand() % moves.size()];
             game.makeMove(move);
+            std::cout << "Chosen Move" << std::endl;
+            move.printMove();
+            std::cout << std::endl;
         }
 
         moves = game.findMoves(allLegalMoves);
@@ -167,15 +189,23 @@ bool Solver::run(Klondike game, int seed) {
     return game.isWon();
 }
 
-bool dfs(Klondike game, int depth) {
-    std::vector<Move> moves = game.findMoves(allLegalMoves);
-    game.findMoves();
+bool dfs(Klondike game, Move move, int depth) {
+    game.makeMove(move);
+    std::vector<Move> moves = game.findMoves(false);
 
-    for (auto const &move: moves) {
-        if (checkSafeMove(game, move) || (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown())) {
+    for (auto &move: moves) {
+        if (checkSafeMove(game, move, false) || (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown())) {
             return true;
         }
     }
 
-    return dfs(game.copy());
+    if (depth < 4) {
+        for (auto &move: moves) {
+            if (dfs(Klondike(game), move, depth + 1)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

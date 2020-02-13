@@ -22,15 +22,6 @@ int Klondike::getStockPointer() {
     return stockPointer;
 }
 
-//Function to clone a Klondike object
-Klondike::Klondike(Klondike klondike) :
-        tableau(klondike.getTableau()),
-        stock(klondike.getStock()),
-        foundation(klondike.getFoundation()),
-        won(klondike.isWon()),
-        deal(klondike.getDeal()),
-        stockPointer(klondike.getStockPointer()) {}
-
 // Function to set up a game of Klondike
 Klondike::Klondike(int seed, int deal) : deal(deal) {
 

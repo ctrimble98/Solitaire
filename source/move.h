@@ -12,7 +12,6 @@ public:
     std::array<int, 3> getEnd();
     Card getCard();
 
-    Move(Move move);
     Move(std::array<int, 3> start, std::array<int, 3> end, Card card);
 
     void printMove();
