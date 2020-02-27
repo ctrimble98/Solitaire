@@ -2,11 +2,10 @@
 
 //Durstenfeld shuffle
 std::array<Card, CARD_NO> shuffle(std::array<Card, CARD_NO> cards, int seed) {
-    srand(seed);
+
     Card temp;
     int index;
 
-    //std::random_device rd;
     std::mt19937 eng(seed);
 
     for (int i = CARD_NO - 1; i > 1; i--) {

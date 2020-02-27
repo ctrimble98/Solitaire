@@ -47,6 +47,7 @@ Klondike::Klondike(int seed, int deal) : deal(deal) {
         }
     }
     won = false;
+    visitedStates.insert(hashGame());
 }
 
 void Klondike::printGame(bool hideFaceDown) {
@@ -308,7 +309,7 @@ bool Klondike::evalMove(Card dest, Card pot) {
     return false;
 }
 
-void Klondike::makeMove(Move move) {
+bool Klondike::makeMove(Move move) {
     std::vector<Card> cardsToMove;
     switch (move.getStart()[0]) {
         case static_cast<int>(CardLocation::STOCK): {
@@ -340,6 +341,15 @@ void Klondike::makeMove(Move move) {
             tableau[tableauIndex].erase(tableau[tableauIndex].begin() + move.getStart()[2], tableau[tableauIndex].end());
     }
     placeCards(move, cardsToMove);
+
+    int hash = hashGame();
+    if (visitedStates.find(hash) == visitedStates.end()) {
+        // std::cout << "Not found match" << hash << '\n';
+        visitedStates.insert(hashGame());
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void Klondike::placeCards(Move move, std::vector<Card> cardsToMove) {
@@ -390,4 +400,28 @@ std::vector<int> Klondike::getAvailableStock(int stockPointer) {
         }
     }
     return availableCards;
+}
+
+int Klondike::hashGame() {
+
+    int result = 1;
+    int prime = 31;
+
+    result = prime * result + stockPointer;
+
+    for (auto &card: stock) {
+        result = prime * result + card.getUniqueValue();
+    }
+
+    for (int i = 0; i < STACKS; i++) {
+        for (auto &card: tableau[i]) {
+            result = prime * result + card.getUniqueValue() + (104*i);
+        }
+    }
+
+    for (int i = 0; i < 4; i++) {
+        result = prime * result + foundation.size() + (13*i);
+    }
+
+    return result;
 }

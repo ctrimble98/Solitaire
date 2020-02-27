@@ -63,6 +63,11 @@ void Card::turnFaceUp() {
     m_faceDown = false;
 }
 
+int Card::getUniqueValue() {
+    int faceDownComponent = m_faceDown ? 52 : 0;
+    return m_rank + 13*static_cast<int>(m_suit) + faceDownComponent;
+}
+
 std::string Card::toString(bool hideFaceDown) const {
 
     if (m_faceDown && hideFaceDown) {

@@ -144,10 +144,10 @@ bool Solver::run(Klondike game, int seed) {
 
     while (!moves.empty() && movesMade < maxMoves) {
 
-        for (auto &move: moves) {
-            move.printMove();
-        }
-        game.printGame(true);
+        // for (auto &move: moves) {
+        //     move.printMove();
+        // }
+        // game.printGame(true);
 
         bool madeMove = false;
         for (auto &move: moves) {
@@ -155,9 +155,9 @@ bool Solver::run(Klondike game, int seed) {
                 game.makeMove(move);
                 madeMove = true;
 
-                std::cout << "Chosen Move" << std::endl;
-                move.printMove();
-                std::cout << std::endl;
+                // std::cout << "Chosen Move" << std::endl;
+                // move.printMove();
+                // std::cout << std::endl;
                 break;
             }
         }
@@ -167,20 +167,53 @@ bool Solver::run(Klondike game, int seed) {
                 if (dfs(Klondike(game), move, 0)) {
                     game.makeMove(move);
                     madeMove = true;
-                    std::cout << "Chosen Move" << std::endl;
-                    move.printMove();
-                    std::cout << std::endl;
+                    // std::cout << "Chosen Move" << std::endl;
+                    // move.printMove();
+                    // std::cout << std::endl;
                     break;
                 }
             }
         }
 
         if (!madeMove) {
-            Move move = moves[rand() % moves.size()];
-            game.makeMove(move);
-            std::cout << "Chosen Move" << std::endl;
-            move.printMove();
-            std::cout << std::endl;
+            // Move move = moves[rand() % moves.size()];
+            // game.makeMove(move);
+            // std::cout << "Chosen Move" << std::endl;
+            // move.printMove();
+            // std::cout << std::endl;
+            int n = moves.size();
+            std::vector<Move> bestMoves = moves;
+            int bestScore = MIN_SCORE + 1;
+            for (auto const &move: moves) {
+                if (checkSafeMove(game, move, false)) {
+                    bestMoves = std::vector<Move>();
+                    bestMoves.push_back(move);
+                    break;
+                }
+                int score = 0;
+                for (auto &h: heuristics) {
+                    //Need to default score to zero and make additive. Also remove bad moves
+                    score += h.run(game, move);
+                }
+                if (score >= bestScore) {
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMoves = std::vector<Move>();
+                    }
+                    bestMoves.push_back(move);
+                }
+            }
+            Move chosenMove = bestMoves[rand() % bestMoves.size()];
+            game.makeMove(chosenMove);
+
+            // for (auto &move: moves) {
+            //     move.printMove();
+            // }
+            // std::cout << "Chosen Move" << std::endl;
+            // chosenMove.printMove();
+            // game.printGame(true);
+            moves = game.findMoves(allLegalMoves);
+            movesMade++;
         }
 
         moves = game.findMoves(allLegalMoves);
@@ -190,7 +223,12 @@ bool Solver::run(Klondike game, int seed) {
 }
 
 bool dfs(Klondike game, Move move, int depth) {
-    game.makeMove(move);
+
+
+    if (game.makeMove(move)) {
+        return false;
+    }
+
     std::vector<Move> moves = game.findMoves(false);
 
     for (auto &move: moves) {

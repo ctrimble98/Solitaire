@@ -25,6 +25,7 @@ public:
     Suit getSuit() const;
     Colour getColour() const;
     bool isFaceDown() const;
+    int getUniqueValue();
 
     Card();
     Card(int value);

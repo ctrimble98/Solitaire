@@ -13,6 +13,7 @@
 #include <chrono>
 #include <random>
 #include <algorithm>
+#include <unordered_set>
 #include "move.h"
 
 const int CARD_NO = 52;
@@ -44,7 +45,7 @@ public:
     std::vector<Move> findTableauMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves);
     std::vector<Move> findFoundationMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves);
 
-    void makeMove(Move move);
+    bool makeMove(Move move);
     void placeCards(Move move, std::vector<Card> cardsToMove);
     std::vector<int> getAvailableStock(int stockPointer);
 
@@ -55,6 +56,8 @@ public:
 
     void printJsonToFile(bool hideFaceDown, std::string file);
 
+    int hashGame();
+
 private:
 
     bool won;
@@ -63,6 +66,8 @@ private:
     std::array<std::stack<Card>, 4> foundation;
     int deal;
     int stockPointer;
+
+    std::unordered_set<int> visitedStates;
 
     bool evalMove(Card dest, Card pot);
 };
