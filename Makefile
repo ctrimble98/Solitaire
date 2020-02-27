@@ -18,4 +18,4 @@ server:	$(OBJ_FILES)
 all:	server
 
 clean:
-	rm	-f	$(OBJ_DIR)/*.o
+	rm	-f	$(OBJ_DIR)/*.o server
