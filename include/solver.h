@@ -21,7 +21,7 @@ private:
 
 bool checkSafeMove(Klondike game, Move move, bool print);
 
-bool dfs(Klondike game, Move move, int depth);
+bool dfs(Klondike game, Move move, int depth, int maxDepth);
 
 // bool randomSolve(Klondike game);
 // bool weightedSolveAll(Klondike game);

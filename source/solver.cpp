@@ -163,13 +163,18 @@ bool Solver::run(Klondike game, int seed) {
         }
 
         if (!madeMove) {
-            for (auto &move: moves) {
-                if (dfs(Klondike(game), move, 0)) {
-                    game.makeMove(move);
-                    madeMove = true;
-                    // std::cout << "Chosen Move" << std::endl;
-                    // move.printMove();
-                    // std::cout << std::endl;
+            for (int i = 0; i < 10; i++) {
+                for (auto &move: moves) {
+                    if (dfs(Klondike(game), move, 0, i)) {
+                        game.makeMove(move);
+                        madeMove = true;
+                        // std::cout << "Chosen Move" << std::endl;
+                        // move.printMove();
+                        // std::cout << std::endl;
+                        break;
+                    }
+                }
+                if (madeMove) {
                     break;
                 }
             }
@@ -222,7 +227,7 @@ bool Solver::run(Klondike game, int seed) {
     return game.isWon();
 }
 
-bool dfs(Klondike game, Move move, int depth) {
+bool dfs(Klondike game, Move move, int depth, int maxDepth) {
 
 
     if (game.makeMove(move)) {
@@ -237,9 +242,9 @@ bool dfs(Klondike game, Move move, int depth) {
         }
     }
 
-    if (depth < 6) {
+    if (depth < maxDepth) {
         for (auto &move: moves) {
-            if (dfs(Klondike(game), move, depth + 1)) {
+            if (dfs(Klondike(game), move, depth + 1, maxDepth)) {
                 return true;
             }
         }
@@ -247,3 +252,22 @@ bool dfs(Klondike game, Move move, int depth) {
 
     return false;
 }
+
+// bool dfs(Klodike game, std::vector<Move> moves) {
+//
+//     std::stack<Klondike> currentStack;
+//     Klondike currentNode;
+//
+//     for (auto& move: moves) {
+//
+//         currentNode = Klondike(game);
+//
+//         if (currentNode.makeMove(move)) {
+//              ;
+//         }
+//
+//         currentStack.push()
+//
+//         moves = game.findMoves(false);
+//     }
+// }
