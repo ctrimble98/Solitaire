@@ -163,20 +163,31 @@ bool Solver::run(Klondike game, int seed) {
         }
 
         if (!madeMove) {
+            int bestScore = -1;
+            Move chosenMove = moves[0];
             for (int i = 0; i < 10; i++) {
                 for (auto &move: moves) {
-                    if (dfs(Klondike(game), move, 0, i, false, 10)) {
-                        game.makeMove(move);
+                    int score = dfs(Klondike(game), move, 0, i, false, 10);
+                    if (score == 11) {
+                        bestScore = 11;
+                        chosenMove = move;
                         madeMove = true;
                         // std::cout << "Chosen Move" << std::endl;
                         // move.printMove();
                         // std::cout << std::endl;
                         break;
+                    } else if (score > bestScore) {
+                        chosenMove = move;
+                        bestScore = score;
                     }
                 }
                 if (madeMove) {
                     break;
                 }
+            }
+
+            if (bestScore > -1) {
+                game.makeMove(chosenMove);
             }
         }
 
