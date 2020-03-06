@@ -165,7 +165,7 @@ bool Solver::run(Klondike game, int seed) {
         if (!madeMove) {
             for (int i = 0; i < 10; i++) {
                 for (auto &move: moves) {
-                    if (dfs(Klondike(game), move, 0, i)) {
+                    if (dfs(Klondike(game), move, 0, i, false, 10)) {
                         game.makeMove(move);
                         madeMove = true;
                         // std::cout << "Chosen Move" << std::endl;
@@ -227,8 +227,38 @@ bool Solver::run(Klondike game, int seed) {
     return game.isWon();
 }
 
-bool dfs(Klondike game, Move move, int depth, int maxDepth) {
+// bool dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMove) {
+//
+//
+//     if (game.makeMove(move)) {
+//         return false;
+//     }
+//
+//     std::vector<Move> moves = game.findMoves(false);
+//
+//     for (auto &move: moves) {
+//         if (!performedStockMove && checkSafeMove(game, move, false)) {
+//             return true;
+//         } else if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown()) {
+//             return true;
+//         }
+//     }
+//
+//     if (depth < maxDepth) {
+//         for (auto &move: moves) {
+//             if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK)) {
+//                 performedStockMove = true;
+//             }
+//             if (dfs(Klondike(game), move, depth + 1, maxDepth, performedStockMove)) {
+//                 return true;
+//             }
+//         }
+//     }
+//
+//     return false;
+// }
 
+int dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMove, int currentScore) {
 
     if (game.makeMove(move)) {
         return false;
@@ -237,15 +267,24 @@ bool dfs(Klondike game, Move move, int depth, int maxDepth) {
     std::vector<Move> moves = game.findMoves(false);
 
     for (auto &move: moves) {
-        if (/*checkSafeMove(game, move, false) || */(move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown())) {
-            return true;
+        if (!performedStockMove && checkSafeMove(game, move, false)) {
+            return 11;
+        } else if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown()) {
+            return 11;
         }
     }
 
     if (depth < maxDepth) {
+        int score = -1;
         for (auto &move: moves) {
-            if (dfs(Klondike(game), move, depth + 1, maxDepth)) {
-                return true;
+            int modifier = 0;
+            if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK)) {
+                modifier = -1;
+                performedStockMove = true;
+            }
+            int moveScore = dfs(Klondike(game), move, depth + 1, maxDepth, performedStockMove, currentScore + modifier);
+            if (moveScore >= score) {
+                score = moveScore;
             }
         }
     }
