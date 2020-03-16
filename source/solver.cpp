@@ -1,6 +1,6 @@
 #include "solver.h"
 
-Solver::Solver(std::string name, std::vector<Heuristic> heuristics) : name(name), heuristics(heuristics) {
+Solver::Solver(std::string name, std::vector<Heuristic> heuristics, std::function<bool(Klondike, std::vector<Move>)> searchFcn) : name(name), heuristics(heuristics), searchFcn(searchFcn) {
     sort(heuristics.begin(), heuristics.end(), std::greater <>());
 }
 
@@ -163,34 +163,8 @@ bool Solver::run(Klondike game, int seed) {
         }
 
         if (!madeMove) {
-            int bestScore = -1;
-            Move chosenMove = moves[0];
-            for (int i = 0; i < 10; i++) {
-                for (auto &move: moves) {
-                    int score = dfs(Klondike(game), move, 0, i, false, 10);
-                    if (score == 11) {
-                        bestScore = 11;
-                        chosenMove = move;
-                        madeMove = true;
-                        // std::cout << "Chosen Move" << std::endl;
-                        // move.printMove();
-                        // std::cout << std::endl;
-                        break;
-                    } else if (score > bestScore) {
-                        chosenMove = move;
-                        bestScore = score;
-                    }
-                }
-                if (madeMove) {
-                    break;
-                }
-            }
-
-            if (bestScore > -1) {
-                game.makeMove(chosenMove);
-            }
+            madeMove = searchFcn(game, moves);
         }
-
         if (!madeMove) {
             // Move move = moves[rand() % moves.size()];
             // game.makeMove(move);
@@ -238,6 +212,62 @@ bool Solver::run(Klondike game, int seed) {
     return game.isWon();
 }
 
+bool runSearchCheckStock(Klondike game, std::vector<Move> moves) {
+    bool madeMove = false;
+    int bestScore = -1;
+    Move chosenMove = moves[0];
+    for (int i = 0; i < 8; i++) {
+        for (auto &move: moves) {
+            int score = dfs(Klondike(game), move, 0, i, false, 0);
+            if (score == 11) {
+                bestScore = 11;
+                chosenMove = move;
+                madeMove = true;
+                break;
+            } else if (score > bestScore) {
+                chosenMove = move;
+                bestScore = score;
+            }
+        }
+        if (madeMove) {
+            break;
+        }
+    }
+
+    if (bestScore > 0) {
+        madeMove = true;
+        game.makeMove(chosenMove);
+    }
+    return madeMove;
+}
+
+bool runSearchNoCheckStock(Klondike game, std::vector<Move> moves) {
+    bool madeMove = false;
+    for (int i = 0; i < 8; i++) {
+            for (auto &move: moves) {
+                if (dfs(Klondike(game), move, 0, i, false, 0) > 0) {
+                    game.makeMove(move);
+                    madeMove = true;
+                    break;
+                }
+            }
+            if (madeMove) {
+                break;
+            }
+        }
+    return madeMove;
+}
+
+bool runSearchDFS(Klondike game, std::vector<Move> moves) {
+    for (auto &move: moves) {
+        if (dfs(Klondike(game), move, 0, 8, false, 0) > 0) {
+            game.makeMove(move);
+            return true;
+        }
+    }
+    return false;
+}
+
 // bool dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMove) {
 //
 //
@@ -271,17 +301,21 @@ bool Solver::run(Klondike game, int seed) {
 
 int dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMove, int currentScore) {
 
-    if (game.makeMove(move)) {
-        return false;
+    if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK)) {
+        performedStockMove = true;
+    }
+
+    if (!game.makeMove(move)) {
+        return -1;
     }
 
     std::vector<Move> moves = game.findMoves(false);
 
     for (auto &move: moves) {
         if (!performedStockMove && checkSafeMove(game, move, false)) {
-            return 11;
+            return 10 + currentScore;
         } else if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown()) {
-            return 11;
+            return 10 + currentScore;
         }
     }
 
@@ -291,33 +325,14 @@ int dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMo
             int modifier = 0;
             if (move.getStart()[0] == static_cast<int>(CardLocation::STOCK)) {
                 modifier = -1;
-                performedStockMove = true;
             }
             int moveScore = dfs(Klondike(game), move, depth + 1, maxDepth, performedStockMove, currentScore + modifier);
             if (moveScore >= score) {
                 score = moveScore;
             }
         }
+
+        return score;
     }
-
-    return false;
+    return currentScore;
 }
-
-// bool dfs(Klodike game, std::vector<Move> moves) {
-//
-//     std::stack<Klondike> currentStack;
-//     Klondike currentNode;
-//
-//     for (auto& move: moves) {
-//
-//         currentNode = Klondike(game);
-//
-//         if (currentNode.makeMove(move)) {
-//              ;
-//         }
-//
-//         currentStack.push()
-//
-//         moves = game.findMoves(false);
-//     }
-// }

@@ -113,7 +113,7 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
             heuristics.push_back(h6);
             heuristics.push_back(h7);
             heuristics.push_back(h8);
-            solvers.push_back(Solver(filename, heuristics));
+            // solvers.push_back(Solver(filename, heuristics));
         }
 
         return solvers;
@@ -145,7 +145,11 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
     heuristics.push_back(h6);
     heuristics.push_back(h7);
     heuristics.push_back(h8);
-    solvers.push_back(Solver("All", heuristics));
+
+    //TODO FIX BETTER SOLUTION
+    solvers.push_back(Solver("No Stock Check", heuristics, runSearchNoCheckStock));
+    solvers.push_back(Solver("Stock Check", heuristics, runSearchCheckStock));
+    solvers.push_back(Solver("Standard DFS", heuristics, runSearchDFS));
 
     return solvers;
 }
