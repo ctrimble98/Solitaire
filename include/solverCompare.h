@@ -4,6 +4,7 @@
 #include "klondike.h"
 #include "solver.h"
 #include <sstream>
+#include <future>
 
 class SolverCompare {
 public:

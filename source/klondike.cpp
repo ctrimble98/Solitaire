@@ -15,6 +15,15 @@ bool Klondike::isWon() {
     return won;
 }
 
+bool Klondike::hasHiddenCards() {
+    for (auto &stack: tableau) {
+        if (stack.size() > 0 && stack[0].isFaceDown()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int Klondike::getDeal() {
     return deal;
 }

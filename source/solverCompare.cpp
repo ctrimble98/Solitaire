@@ -9,9 +9,15 @@ bool SolverCompare::runSolvers(Klondike game, int seed) {
 
     int n = solvers.size();
     std::vector<bool> wins(n, false);
+    std::vector<std::future<bool>> threads;
     bool anyWins = false;
+
     for (int i = 0; i < n; i++) {
-        if (solvers[i].run(game, seed)) {
+        threads.push_back(std::async(std::launch::async, &Solver::run, &solvers[i], game, seed));
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (threads[i].get()) {
             wins[i] = true;
             anyWins = true;
         }

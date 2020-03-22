@@ -37,6 +37,7 @@ public:
     std::array<std::stack<Card>, 4> getFoundation();
     int getDeal();
     int getStockPointer();
+    bool hasHiddenCards();
     bool isWon();
 
     Klondike(int seed, int deal);

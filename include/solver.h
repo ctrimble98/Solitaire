@@ -9,25 +9,33 @@ public:
 
     bool run(Klondike game, int seed);
     std::string getName();
+    std::function<bool(int, int)> getLimitFcn();
+    void addNode();
+    int getNodes();
 
-    Solver(/*std::function<bool(Klondike)> solvFcn, */std::string name, std::vector<Heuristic> heuristics, std::function<bool(Klondike, std::vector<Move>)> searchFcn);
+    Solver(/*std::function<bool(Klondike)> solvFcn, */std::string name, std::vector<Heuristic> heuristics, std::function<bool(Solver*, Klondike, std::vector<Move>)> searchFcn, std::function<bool(int, int)> limitFcn);
 
 private:
 
     std::string name;
     std::function<bool(Klondike)> solvFcn;
     std::vector<Heuristic> heuristics;
-    std::function<bool(Klondike, std::vector<Move>)> searchFcn;
+    std::function<bool(Solver*, Klondike, std::vector<Move>)> searchFcn;
+    std::function<bool(int, int)> limitFcn;
+    int nodes;
 };
 
 bool checkSafeMove(Klondike game, Move move, bool print);
 
 // bool dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMove);
-bool runSearchCheckStock(Klondike game, std::vector<Move> moves);
-bool runSearchNoCheckStock(Klondike game, std::vector<Move> moves);
-bool runSearchDFS(Klondike game, std::vector<Move> moves);
+bool runSearchCheckStock(Solver* solver, Klondike game, std::vector<Move> moves);
+bool runSearchNoCheckStock(Solver* solver, Klondike game, std::vector<Move> moves);
+bool runSearchDFS(Solver* solver, Klondike game, std::vector<Move> moves);
 
-int dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMove, int currentScore);
+int dfs(Solver* solver, Klondike game, Move move, int depth, int maxDepth, bool performedStockMove, int currentScore);
+
+bool depthLimit(int depth, int nodes);
+bool nodeLimit(int depth, int nodes);
 
 // bool randomSolve(Klondike game);
 // bool weightedSolveAll(Klondike game);

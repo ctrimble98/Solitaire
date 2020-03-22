@@ -1,5 +1,6 @@
-10 games played
-,	No Stock Check,	Stock Check,	Standard DFS
-No Stock Check,	0,	0,	0
-Stock Check,	0,	0,	0
-Standard DFS,	0,	0,	0
+20 games played
+,	No Stock Check,	Stock Check,	Standard DFS Node Limit,	Standard DFS
+No Stock Check,	0,	0,	0,	0
+Stock Check,	0,	0,	0,	0
+Standard DFS Node Limit,	0,	0,	0,	0
+Standard DFS,	0,	0,	0,	0

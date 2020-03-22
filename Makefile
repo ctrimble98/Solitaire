@@ -1,5 +1,5 @@
 CC	=	g++		-std=c++17
-FLAGS	=	-g	-O2	-Wextra
+FLAGS	=	-g	-O2	-Wextra	-pthread
 
 SRC_DIR	=	source
 INC_DIR	=	include

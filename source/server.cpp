@@ -147,9 +147,10 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
     heuristics.push_back(h8);
 
     //TODO FIX BETTER SOLUTION
-    solvers.push_back(Solver("No Stock Check", heuristics, runSearchNoCheckStock));
-    solvers.push_back(Solver("Stock Check", heuristics, runSearchCheckStock));
-    solvers.push_back(Solver("Standard DFS", heuristics, runSearchDFS));
+    solvers.push_back(Solver("No Stock Check", heuristics, runSearchNoCheckStock, depthLimit));
+    solvers.push_back(Solver("Stock Check", heuristics, runSearchCheckStock, depthLimit));
+    solvers.push_back(Solver("Standard DFS Node Limit", heuristics, runSearchDFS, nodeLimit));
+    solvers.push_back(Solver("Standard DFS", heuristics, runSearchDFS, depthLimit));
 
     return solvers;
 }
