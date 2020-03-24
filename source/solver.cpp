@@ -1,6 +1,6 @@
 #include "solver.h"
 
-Solver::Solver(std::string name, std::vector<Heuristic> heuristics, std::function<bool(Solver*, Klondike, std::vector<Move>)> searchFcn, std::function<bool(int, int)> limitFcn) : name(name), heuristics(heuristics), searchFcn(searchFcn), limitFcn(limitFcn) {
+Solver::Solver(std::string name, std::vector<Heuristic> heuristics, std::function<bool(Solver*, Klondike, std::vector<Move>)> searchFcn, std::function<int(int, int)> limitFcn) : name(name), heuristics(heuristics), searchFcn(searchFcn), limitFcn(limitFcn) {
     sort(heuristics.begin(), heuristics.end(), std::greater <>());
 }
 
@@ -61,14 +61,14 @@ void Solver::addNode() {
     nodes++;
 }
 
-std::function<bool(int, int)> Solver::getLimitFcn() {
+std::function<int(int, int)> Solver::getLimitFcn() {
     return limitFcn;
 }
 
 bool checkSafeMove(Klondike game, Move move, bool print) {
     bool safeMoveStart = true;
     if (game.getDeal() > 1) {
-        safeMoveStart = (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) || (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && (game.getStockPointer() + 1) % game.getDeal() == 0 && move.getEnd()[2] == (signed)game.getStock().size() - 1));
+        safeMoveStart = (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) || (move.getStart()[0] == static_cast<int>(CardLocation::STOCK) && (game.getStockPointer() + 1) % game.getDeal() == 0 && move.getStart()[2] == (signed)game.getStock().size() - 1));
     }
     bool safeMoveEnd = getSafeFoundation(game, move);
     // if (print) {
@@ -78,7 +78,6 @@ bool checkSafeMove(Klondike game, Move move, bool print) {
     //     std::cout << '\n';
     // }
     if (safeMoveStart && safeMoveEnd) {
-
         return true;
     }
     return false;
@@ -147,138 +146,147 @@ bool checkSafeMove(Klondike game, Move move, bool print) {
 //     return game.isWon();
 // }
 
-bool Solver::run(Klondike game, int seed) {
+bool Solver::run(Klondike game, int seed, bool verbose) {
     bool allLegalMoves = false;
-    int maxMoves = 200;
-    std::vector<Move> moves = game.findMoves(allLegalMoves);
+    int maxMoves = 150;
+    std::vector<Move> moves = game.getMoves(allLegalMoves);
     int movesMade = 0;
     srand(seed);
 
     while (!moves.empty() && movesMade < maxMoves) {
 
-        // for (auto &move: moves) {
-        //     move.printMove();
-        // }
-        // game.printGame(true);
+        int chosenMove = rand() % moves.size();
 
-        bool madeMove = false;
-        for (auto &move: moves) {
-            if (checkSafeMove(game, move, true) || (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown())) {
-                game.makeMove(move);
-                madeMove = true;
-
-                // std::cout << "Chosen Move" << std::endl;
-                // move.printMove();
-                // std::cout << std::endl;
-                break;
+        if (verbose) {
+            std::cout << "Solver : " << name << " Game State " << std::endl;
+            std::cout << "Moves made: " << movesMade << std::endl;
+            game.printGame(true);
+            std::cout << "Moves Available:" << std::endl;
+            for (auto &move: moves) {
+                move.printMove();
             }
         }
 
-        if (!madeMove && !game.hasHiddenCards()) {
-            nodes = 0;
-            madeMove = searchFcn(this, game, moves);
+        bool madeMove = false;
+        for (int i = 0; i < moves.size(); i++) {
+            if (checkSafeMove(game, moves[i], true)) {
+                chosenMove = i;
+                madeMove = true;
+                break;
+            }
         }
         if (!madeMove) {
-            // Move move = moves[rand() % moves.size()];
-            // game.makeMove(move);
-            // std::cout << "Chosen Move" << std::endl;
-            // move.printMove();
-            // std::cout << std::endl;
+            for (int i = 0; i < moves.size(); i++) {
+                Move move = moves[i];
+                if ((move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown())) {
+                    chosenMove = i;
+                    madeMove = true;
+                    break;
+                }
+            }
+        }
+
+        if (!madeMove && game.hasHiddenCards()) {
+            nodes = 0;
+            int chosenIndex = searchFcn(this, game, moves);
+            std::cout << movesMade << " " << chosenIndex << " " << moves.size() << '\n';
+            if (chosenIndex > -1) {
+                std::cout << chosenIndex << " " << searchFcn(this, game, moves) << '\n';
+                chosenMove = chosenIndex;
+                madeMove = true;
+            }
+        }
+        if (!madeMove) {
             int n = moves.size();
-            std::vector<Move> bestMoves = moves;
+            std::vector<int> bestMoves(moves.size());
+            std::iota(bestMoves.begin(), bestMoves.end(), 0);
             int bestScore = MIN_SCORE + 1;
-            for (auto const &move: moves) {
-                if (checkSafeMove(game, move, false)) {
-                    bestMoves = std::vector<Move>();
-                    bestMoves.push_back(move);
+            for (int i = 0; i < moves.size(); i++) {
+                if (checkSafeMove(game, moves[i], false)) {
+                    bestMoves = std::vector<int>();
+                    bestMoves.push_back(i);
                     break;
                 }
                 int score = 0;
                 for (auto &h: heuristics) {
-                    //Need to default score to zero and make additive. Also remove bad moves
-                    score += h.run(game, move);
+                    score += h.run(game, moves[i]);
                 }
                 if (score >= bestScore) {
                     if (score > bestScore) {
                         bestScore = score;
-                        bestMoves = std::vector<Move>();
+                        bestMoves = std::vector<int>();
                     }
-                    bestMoves.push_back(move);
+                    bestMoves.push_back(i);
                 }
             }
-            Move chosenMove = bestMoves[rand() % bestMoves.size()];
-            game.makeMove(chosenMove);
-
-            // for (auto &move: moves) {
-            //     move.printMove();
-            // }
-            // std::cout << "Chosen Move" << std::endl;
-            // chosenMove.printMove();
-            // game.printGame(true);
-            moves = game.findMoves(allLegalMoves);
-            movesMade++;
+            chosenMove = bestMoves[rand() % bestMoves.size()];
         }
 
-        moves = game.findMoves(allLegalMoves);
+        game.makeMove(chosenMove);
+
+        if (verbose) {
+            std::cout << "Chosen Move" << std::endl;
+            moves[chosenMove].printMove();
+            std::cout << std::endl;
+        }
+
+        moves = game.getMoves(allLegalMoves);
         movesMade++;
     }
     return game.isWon();
 }
 
-bool runSearchCheckStock(Solver* solver, Klondike game, std::vector<Move> moves) {
-    bool madeMove = false;
+int runSearchCheckStock(Solver* solver, Klondike game, std::vector<Move> moves) {
     int bestScore = -1;
-    Move chosenMove = moves[0];
+    int chosenMove = -1;
     for (int i = 0; i < 8; i++) {
-        for (auto &move: moves) {
-            int score = dfs(solver, Klondike(game), move, 0, i, false, 0);
+        for (int j = 0; j < moves.size(); j++) {
+            Klondike temp = Klondike(game);
+            temp.makeMove(j);
+            int score = dfs(solver, temp, moves[j], 0, i, false, 0);
             if (score == 20 || score == 10) {
                 bestScore = score;
-                chosenMove = move;
-                madeMove = true;
+                chosenMove = j;
                 break;
             } else if (score > bestScore) {
-                chosenMove = move;
+                chosenMove = j;
                 bestScore = score;
             }
         }
-        if (madeMove) {
+        if (chosenMove > -1) {
             break;
         }
     }
-
-    if (bestScore > -1) {
-        madeMove = true;
-        game.makeMove(chosenMove);
+    if (chosenMove == -1) {
+        std::cout << "/* message */" << '\n';
     }
-    return madeMove;
+    return chosenMove;
 }
 
-bool runSearchNoCheckStock(Solver* solver, Klondike game, std::vector<Move> moves) {
-    bool madeMove = false;
+int runSearchNoCheckStock(Solver* solver, Klondike game, std::vector<Move> moves) {
     for (int i = 0; i < 8; i++) {
-        for (auto &move: moves) {
-            if (dfs(solver, Klondike(game), move, 0, i, false, 0) > -1) {
-                game.makeMove(move);
-                madeMove = true;
-                break;
+        for (size_t j = 0; j < moves.size(); j++) {
+            Klondike temp = Klondike(game);
+            temp.makeMove(j);
+            if (dfs(solver, temp, moves[j], 0, i, false, 0) > -1) {
+                // Move move = moves[j];
+                return j;
             }
         }
-        if (madeMove) {
-            break;
-        }
     }
-    return madeMove;
+    return -1;
 }
 
-bool runSearchDFS(Solver* solver, Klondike game, std::vector<Move> moves) {
-    for (auto &move: moves) {
-        if (dfs(solver, Klondike(game), move, 0, 8, false, 0) > -1) {
-            game.makeMove(move);
-            return true;
+int runSearchDFS(Solver* solver, Klondike game, std::vector<Move> moves) {
+    for (size_t i = 0; i < moves.size(); i++) {
+        Klondike temp = Klondike(game);
+        temp.makeMove(i);
+        if (dfs(solver, temp, moves[i], 0, 8, false, 0) > -1) {
+            // Move move = moves[i];
+            return i;
         }
     }
-    return false;
+    return -1;
 }
 
 // bool dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMove) {
@@ -319,11 +327,9 @@ int dfs(Solver* solver, Klondike game, Move move, int depth, int maxDepth, bool 
         performedStockMove = true;
     }
 
-    if (!game.makeMove(move)) {
-        return -1;
-    }
+    // game.makeMove(move));
 
-    std::vector<Move> moves = game.findMoves(false);
+    std::vector<Move> moves = game.getMoves(false);
 
     for (auto &move: moves) {
         if (!performedStockMove && checkSafeMove(game, move, false)) {
@@ -335,9 +341,11 @@ int dfs(Solver* solver, Klondike game, Move move, int depth, int maxDepth, bool 
 
     if (solver->getLimitFcn()(depth, solver->getNodes())) {
         int score = -1;
-        for (auto &move: moves) {
-            int modifier = move.getStart()[0] == static_cast<int>(CardLocation::STOCK) ? -1 : 0;
-            int moveScore = dfs(solver, Klondike(game), move, depth + 1, maxDepth, performedStockMove, currentScore + modifier);
+        for (int i = 0; i < moves.size(); i++) {
+            int modifier = moves[i].getStart()[0] == static_cast<int>(CardLocation::STOCK) ? -1 : 0;
+            Klondike temp = Klondike(game);
+            temp.makeMove(i);
+            int moveScore = dfs(solver, temp, moves[i], depth + 1, maxDepth, performedStockMove, currentScore + modifier);
             if (moveScore > score) {
                 score = moveScore;
             }

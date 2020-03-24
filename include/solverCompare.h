@@ -11,7 +11,7 @@ public:
 
     bool runSolvers(Klondike game, int seed);
 
-    SolverCompare(std::vector<Solver> solvers);
+    SolverCompare(std::vector<Solver> solvers, bool verbose);
 
     std::string toString();
 
@@ -22,6 +22,7 @@ private:
     std::vector<Solver> solvers;
     std::vector<std::vector<int>> winComp;
     int gamesPlayed;
+    bool verbose;
 };
 
 #endif

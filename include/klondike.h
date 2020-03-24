@@ -42,11 +42,12 @@ public:
 
     Klondike(int seed, int deal);
 
-    std::vector<Move> findMoves(bool allLegalMoves);
-    std::vector<Move> findTableauMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves);
-    std::vector<Move> findFoundationMoves(std::vector<Move> moves, std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock, bool allLegalMoves);
+    std::vector<Move> getMoves(bool allLegalMoves);
+    void findMoves();
+    void findTableauMoves(std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock);
+    void findFoundationMoves(std::vector<std::tuple<Card, int, int>> tableauMovableCards, std::vector<int> availableStock);
 
-    bool makeMove(Move move);
+    bool makeMove(int moveIndex, bool findNextMoves = true);
     void placeCards(Move move, std::vector<Card> cardsToMove);
     std::vector<int> getAvailableStock(int stockPointer);
 
@@ -67,6 +68,9 @@ private:
     std::array<std::stack<Card>, 4> foundation;
     int deal;
     int stockPointer;
+
+    std::vector<Move> availableMoves;
+    std::vector<Move> extraMoves;
 
     std::unordered_set<int> visitedStates;
 

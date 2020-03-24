@@ -6,7 +6,8 @@ int main(int argc, char *argv[]) {
     int seed = time(NULL);
     int deal = 3;
     std::vector<std::string> hFiles;
-    bool verify = false;
+    bool verbose = false;
+    bool checkSolv = false;
     Verifier verifier = Verifier("klondike.json", "solvOut.txt");
 
     int opt;
@@ -25,7 +26,10 @@ int main(int argc, char *argv[]) {
                 hFiles.push_back(optarg);
                 break;
             case 'v':
-                verify = true;
+                verbose = true;
+                break;
+            case 'c':
+                checkSolv = true;
                 break;
             case '?':
                 std::cout << "Unknown option: " << optopt << std::endl;
@@ -35,17 +39,17 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Running solvers with " << deal << " deal klondike on " <<games << " games with seed " << seed;
 
-    if (verify) {
+    if (checkSolv) {
         std::cout << " with solvitaire verification";
     }
     std::cout << std::endl;
 
     std::vector<Solver> solvers = setSolvers(hFiles);
 
-    SolverCompare comp(solvers);
+    SolverCompare comp(solvers, verbose);
 
     auto start = std::chrono::high_resolution_clock::now();
-    comp = runGames(comp, deal, seed, games, verify, verifier);
+    comp = runGames(comp, deal, seed, games, checkSolv, verifier);
     auto end = std::chrono::high_resolution_clock::now();
 
     std::ofstream out("comp.csv");
@@ -147,10 +151,10 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
     heuristics.push_back(h8);
 
     //TODO FIX BETTER SOLUTION
-    solvers.push_back(Solver("No Stock Check", heuristics, runSearchNoCheckStock, depthLimit));
+    // solvers.push_back(Solver("No Stock Check", heuristics, runSearchNoCheckStock, depthLimit));
     solvers.push_back(Solver("Stock Check", heuristics, runSearchCheckStock, depthLimit));
-    solvers.push_back(Solver("Standard DFS Node Limit", heuristics, runSearchDFS, nodeLimit));
-    solvers.push_back(Solver("Standard DFS", heuristics, runSearchDFS, depthLimit));
+    // solvers.push_back(Solver("Standard DFS Node Limit", heuristics, runSearchDFS, nodeLimit));
+    // solvers.push_back(Solver("Standard DFS", heuristics, runSearchDFS, depthLimit));
 
     return solvers;
 }

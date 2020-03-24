@@ -1,6 +1,6 @@
 #include "solverCompare.h"
 
-SolverCompare::SolverCompare(std::vector<Solver> solvers): solvers(solvers), gamesPlayed(0) {
+SolverCompare::SolverCompare(std::vector<Solver> solvers, bool verbose): solvers(solvers), verbose(verbose), gamesPlayed(0) {
     int n = solvers.size();
     winComp = std::vector<std::vector<int>>(n, std::vector<int>(n, 0));
 }
@@ -13,7 +13,7 @@ bool SolverCompare::runSolvers(Klondike game, int seed) {
     bool anyWins = false;
 
     for (int i = 0; i < n; i++) {
-        threads.push_back(std::async(std::launch::async, &Solver::run, &solvers[i], game, seed));
+        threads.push_back(std::async(std::launch::async, &Solver::run, &solvers[i], game, seed, verbose));
     }
 
     for (int i = 0; i < n; i++) {
