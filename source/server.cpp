@@ -151,10 +151,14 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
     heuristics.push_back(h8);
 
     //TODO FIX BETTER SOLUTION
-    // solvers.push_back(Solver("No Stock Check", heuristics, runSearchNoCheckStock, depthLimit));
-    solvers.push_back(Solver("Stock Check", heuristics, runSearchCheckStock, depthLimit));
-    // solvers.push_back(Solver("Standard DFS Node Limit", heuristics, runSearchDFS, nodeLimit));
-    // solvers.push_back(Solver("Standard DFS", heuristics, runSearchDFS, depthLimit));
+    // solvers.push_back(Solver("No Stock Check", heuristics, runSearchNoCheckStock, getDepth, 6));
+    // solvers.push_back(Solver("Stock Check", heuristics, runSearchCheckStock, getDepth, 5));
+    // solvers.push_back(Solver("Stock Check", heuristics, runSearchCheckStock, getDepth, 6));
+    // solvers.push_back(Solver("Stock Check", heuristics, runSearchCheckStock, getDepth, 7));
+    // solvers.push_back(Solver("Standard DFS Node Limit 150", heuristics, runSearchDFS, getNodes, 150));
+    // solvers.push_back(Solver("Standard DFS Node Limit 200", heuristics, runSearchDFS, getNodes, 200));
+    // solvers.push_back(Solver("Standard DFS Depth 6", heuristics, runSearchDFS, getDepth, 6));
+    solvers.push_back(Solver("Standard DFS Depth 8", heuristics, runSearchDFS, getDepth, 8));
 
     return solvers;
 }

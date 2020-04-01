@@ -228,18 +228,14 @@ void Klondike::findTableauMoves(std::vector<std::tuple<Card, int, int>> tableauM
         if (stack.empty()) {
 
             for (auto const &card: tableauMovableCards) {
-                if (std::get<0>(card).getRank() == HIGH_CARD_RANK && std::get<2>(card) != 0) {
+                if (std::get<0>(card).getRank() == HIGH_CARD_RANK) {
                     moveStart = {static_cast<int>(CardLocation::TABLEAU), std::get<1>(card), std::get<2>(card)};
                     moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
-                    availableMoves.push_back(Move(moveStart, moveEnd, std::get<0>(card)));
-                }
-            }
-
-            for (int j = 0; j < STACKS; j++) {
-                if (tableau[j].back().getRank() == HIGH_CARD_RANK) {
-                    moveStart = {static_cast<int>(CardLocation::TABLEAU), j, (int)tableau[j].size() - 1};
-                    moveEnd = {static_cast<int>(CardLocation::TABLEAU), i, 0};
-                    extraMoves.push_back(Move(moveStart, moveEnd, tableau[j].back()));
+                    if (std::get<2>(card) != 0) {
+                        availableMoves.push_back(Move(moveStart, moveEnd, std::get<0>(card)));
+                    } else {
+                        extraMoves.push_back(Move(moveStart, moveEnd, std::get<0>(card)));
+                    }
                 }
             }
 
@@ -335,13 +331,13 @@ bool Klondike::makeMove(int moveIndex, bool findNextMoves /*=true*/) {
         return false;
     }
 
-    Move move = availableMoves[0];
-    if (moveIndex < availableMoves.size()) {
-        move = availableMoves[moveIndex];
-    } else {
-        move = extraMoves[moveIndex - availableMoves.size()];
-    }
-    // Move move = moveIndex < availableMoves.size() ? availableMoves[moveIndex] : extraMoves[moveIndex - availableMoves.size()];
+    // Move move = availableMoves[0];
+    // if (moveIndex < availableMoves.size()) {
+    //     move = availableMoves[moveIndex];
+    // } else {
+    //     move = extraMoves[moveIndex - availableMoves.size()];
+    // }
+    Move move = moveIndex < availableMoves.size() ? availableMoves[moveIndex] : extraMoves[moveIndex - availableMoves.size()];
 
     std::vector<Card> cardsToMove;
     switch (move.getStart()[0]) {

@@ -10,10 +10,16 @@ public:
     bool run(Klondike game, int seed, bool verbose);
     std::string getName();
     std::function<int(int, int)> getLimitFcn();
+    std::function<int(Solver*, int)> getSearchValueFcn();
     void addNode();
     int getNodes();
+    int getLimit();
 
-    Solver(/*std::function<bool(Klondike)> solvFcn, */std::string name, std::vector<Heuristic> heuristics, std::function<bool(Solver*, Klondike, std::vector<Move>)> searchFcn, std::function<int(int, int)> limitFcn);
+    Solver(std::string name,
+        std::vector<Heuristic> heuristics,
+        std::function<int(Solver*, Klondike, std::vector<Move>)> searchFcn,
+        std::function<int(Solver*, int)> searchValueFcn,
+        int searchLimit);
 
 private:
 
@@ -22,7 +28,9 @@ private:
     std::vector<Heuristic> heuristics;
     std::function<int(Solver*, Klondike, std::vector<Move>)> searchFcn;
     std::function<bool(int, int)> limitFcn;
+    std::function<int(Solver*, int)> searchValueFcn;
     int nodes;
+    int limit;
 };
 
 bool checkSafeMove(Klondike game, Move move, bool print);
@@ -34,8 +42,13 @@ int runSearchDFS(Solver* solver, Klondike game, std::vector<Move> moves);
 
 int dfs(Solver* solver, Klondike game, Move move, int depth, int maxDepth, bool performedStockMove, int currentScore);
 
+bool checkLimit(int value, int limit);
+
 bool depthLimit(int depth, int nodes);
 bool nodeLimit(int depth, int nodes);
+
+int getNodes(Solver* solver, int depth);
+int getDepth(Solver* solver, int depth);
 
 // bool randomSolve(Klondike game);
 // bool weightedSolveAll(Klondike game);

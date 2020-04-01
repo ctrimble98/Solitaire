@@ -1,6 +1,6 @@
-#include "solver.h"
+ #include "solver.h"
 
-Solver::Solver(std::string name, std::vector<Heuristic> heuristics, std::function<bool(Solver*, Klondike, std::vector<Move>)> searchFcn, std::function<int(int, int)> limitFcn) : name(name), heuristics(heuristics), searchFcn(searchFcn), limitFcn(limitFcn) {
+Solver::Solver(std::string name, std::vector<Heuristic> heuristics, std::function<int(Solver*, Klondike, std::vector<Move>)> searchFcn, std::function<int(Solver*, int)> searchValueFcn, int searchLimit) : name(name), heuristics(heuristics), searchFcn(searchFcn), searchValueFcn(searchValueFcn), limit(searchLimit) {
     sort(heuristics.begin(), heuristics.end(), std::greater <>());
 }
 
@@ -61,8 +61,16 @@ void Solver::addNode() {
     nodes++;
 }
 
+int Solver::getLimit() {
+    return limit;
+}
+
 std::function<int(int, int)> Solver::getLimitFcn() {
     return limitFcn;
+}
+
+std::function<int(Solver*, int)> Solver::getSearchValueFcn() {
+    return searchValueFcn;
 }
 
 bool checkSafeMove(Klondike game, Move move, bool print) {
@@ -189,9 +197,7 @@ bool Solver::run(Klondike game, int seed, bool verbose) {
         if (!madeMove && game.hasHiddenCards()) {
             nodes = 0;
             int chosenIndex = searchFcn(this, game, moves);
-            std::cout << movesMade << " " << chosenIndex << " " << moves.size() << '\n';
             if (chosenIndex > -1) {
-                std::cout << chosenIndex << " " << searchFcn(this, game, moves) << '\n';
                 chosenMove = chosenIndex;
                 madeMove = true;
             }
@@ -256,9 +262,6 @@ int runSearchCheckStock(Solver* solver, Klondike game, std::vector<Move> moves) 
         if (chosenMove > -1) {
             break;
         }
-    }
-    if (chosenMove == -1) {
-        std::cout << "/* message */" << '\n';
     }
     return chosenMove;
 }
@@ -333,13 +336,14 @@ int dfs(Solver* solver, Klondike game, Move move, int depth, int maxDepth, bool 
 
     for (auto &move: moves) {
         if (!performedStockMove && checkSafeMove(game, move, false)) {
-            return 10 + currentScore;
-        } else if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown()) {
             return 20 + currentScore;
+        } else if (move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown()) {
+            return 10 + currentScore;
         }
     }
 
-    if (solver->getLimitFcn()(depth, solver->getNodes())) {
+    // if (solver->getLimitFcn()(depth, solver->getNodes())) {
+    if (checkLimit(solver->getSearchValueFcn()(solver, depth), solver->getLimit())) {
         int score = -1;
         for (int i = 0; i < moves.size(); i++) {
             int modifier = moves[i].getStart()[0] == static_cast<int>(CardLocation::STOCK) ? -1 : 0;
@@ -386,6 +390,21 @@ int dfs(Solver* solver, Klondike game, Move move, int depth, int maxDepth, bool 
 //
 //     return -1;
 // }
+
+int getDepth(Solver* solver, int depth) {
+    return depth;
+}
+
+int getNodes(Solver* solver, int depth) {
+    return solver->getNodes();
+}
+
+bool checkLimit(int value, int limit) {
+    if (value < limit) {
+        return true;
+    }
+    return false;
+}
 
 bool depthLimit(int depth, int nodes) {
     if (depth < 6) {
