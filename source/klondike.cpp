@@ -331,12 +331,6 @@ bool Klondike::makeMove(int moveIndex, bool findNextMoves /*=true*/) {
         return false;
     }
 
-    // Move move = availableMoves[0];
-    // if (moveIndex < availableMoves.size()) {
-    //     move = availableMoves[moveIndex];
-    // } else {
-    //     move = extraMoves[moveIndex - availableMoves.size()];
-    // }
     Move move = moveIndex < availableMoves.size() ? availableMoves[moveIndex] : extraMoves[moveIndex - availableMoves.size()];
 
     std::vector<Card> cardsToMove;
@@ -345,13 +339,15 @@ bool Klondike::makeMove(int moveIndex, bool findNextMoves /*=true*/) {
             int stockIndex = move.getStart()[2];
             cardsToMove.push_back(stock[stockIndex]);
             stock.erase(stock.begin() + stockIndex);
-            if (stockIndex > 0) {
-                stockPointer = stockIndex - 1;
-            } else if (stock.size() >= (unsigned)deal) {
-                stockPointer = deal - 1;
-            } else {
-                stockPointer = stock.size() - 1;
-            }
+            // if (stockIndex > 0) {
+            //     stockPointer = stockIndex - 1;
+            // } else if (stock.size() >= (unsigned)deal) {
+            //     stockPointer = deal - 1;
+            // } else {
+            //     stockPointer = stock.size() - 1;
+            // }
+            //TODO CHECK THIS WORKS
+            stockPointer = stock.size() > 0 ? (stockIndex - 1) % stock.size() : 0;
             break;
         }
         case static_cast<int>(CardLocation::FOUNDATION):

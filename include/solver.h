@@ -33,11 +33,11 @@ private:
     int limit;
 };
 
-bool checkSafeMove(Klondike game, Move move, bool print);
+bool checkSafeMove(Klondike game, Move move);
 
-// bool dfs(Klondike game, Move move, int depth, int maxDepth, bool performedStockMove);
-int runSearchCheckStock(Solver* solver, Klondike game, std::vector<Move> moves);
-int runSearchNoCheckStock(Solver* solver, Klondike game, std::vector<Move> moves);
+int runNoSearch(Solver* solver, Klondike game, std::vector<Move> moves);
+int runSearchIDDFSCheckStock(Solver* solver, Klondike game, std::vector<Move> moves);
+int runSearchIDDFSNoCheckStock(Solver* solver, Klondike game, std::vector<Move> moves);
 int runSearchDFS(Solver* solver, Klondike game, std::vector<Move> moves);
 
 int dfs(Solver* solver, Klondike game, Move move, int depth, int maxDepth, bool performedStockMove, int currentScore);
@@ -49,14 +49,5 @@ bool nodeLimit(int depth, int nodes);
 
 int getNodes(Solver* solver, int depth);
 int getDepth(Solver* solver, int depth);
-
-// bool randomSolve(Klondike game);
-// bool weightedSolveAll(Klondike game);
-// bool weightedSolve1(Klondike game);
-// bool weightedSolve2(Klondike game);
-// bool weightedSolve3(Klondike game);
-// std::array<int, 2> getFoudationMin(Klondike game);
-// int checkFutureHidden(Klondike game, Move move);
-// bool checkNothingMove(Klondike game, Move move);
 
 #endif
