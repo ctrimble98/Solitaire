@@ -1,10 +1,86 @@
 {
-    "FOUNDATION_SCORE": 0,
-    "REVEAL_HIDDEN_SCORE": 20,
-    "PLAN_REVEAL_HIDDEN_SCORE": 10,
-    "EMPTY_SPACE_NO_KING_SCORE": -10,
-    "STOCK_SAFE": 30,
-    "TABLEAU": 0,
-    "STOCK_DISTANCE": 20,
-    "SMOOTH": 1
+    "solvers": [
+        {
+            "name": "Random Solver"
+        },
+        {
+            "name": "Heuristic Only Solver",
+            "heuristics":
+            {
+                "FOUNDATION_SCORE": 0,
+                "REVEAL_HIDDEN_SCORE": 20,
+                "PLAN_REVEAL_HIDDEN_SCORE": 10,
+                "EMPTY_SPACE_NO_KING_SCORE": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            }
+        },
+        {
+            "name": "Search Only: Depth 7",
+            "search": {
+                "search_fcn": 0,
+                "limit_fcn": 0,
+                "limit_value": 7
+            }
+        },
+        {
+            "name": "DFS: Depth 7",
+            "heuristics":
+            {
+                "FOUNDATION_SCORE": 0,
+                "REVEAL_HIDDEN_SCORE": 20,
+                "PLAN_REVEAL_HIDDEN_SCORE": 10,
+                "EMPTY_SPACE_NO_KING_SCORE": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 2,
+                "limit_fcn": 0,
+                "limit_value": 7
+            }
+        },
+        {
+            "name": "IDDFS Stock Check: Depth 7",
+            "heuristics":
+            {
+                "FOUNDATION_SCORE": 0,
+                "REVEAL_HIDDEN_SCORE": 20,
+                "PLAN_REVEAL_HIDDEN_SCORE": 10,
+                "EMPTY_SPACE_NO_KING_SCORE": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 0,
+                "limit_fcn": 0,
+                "limit_value": 7
+            }
+        },
+        {
+            "name": "IDDFS No Stock Check: Depth 7",
+            "heuristics":
+            {
+                "FOUNDATION_SCORE": 0,
+                "REVEAL_HIDDEN_SCORE": 20,
+                "PLAN_REVEAL_HIDDEN_SCORE": 10,
+                "EMPTY_SPACE_NO_KING_SCORE": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 1,
+                "limit_fcn": 0,
+                "limit_value": 7
+            }
+        }
+    ]
 }

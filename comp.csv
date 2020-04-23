@@ -1,4 +1,8 @@
-40 games played
-,	Stock Check 6,	Stock Check 7
-Stock Check 6,	30,	0
-Stock Check 7,	0,	30
+1 games played
+,	Random Solver,	Heuristic Only Solver,	Search Only: Depth 7,	DFS: Depth 7,	IDDFS Stock Check: Depth 7,	IDDFS No Stock Check: Depth 7
+Random Solver,	0,	0,	0,	0,	0,	0
+Heuristic Only Solver,	0,	0,	0,	0,	0,	0
+Search Only: Depth 7,	0,	0,	0,	0,	0,	0
+DFS: Depth 7,	0,	0,	0,	0,	0,	0
+IDDFS Stock Check: Depth 7,	0,	0,	0,	0,	0,	0
+IDDFS No Stock Check: Depth 7,	0,	0,	0,	0,	0,	0
