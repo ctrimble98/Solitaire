@@ -1,8 +1,8 @@
-1 games played
+20 games played
 ,	Random Solver,	Heuristic Only Solver,	Search Only: Depth 7,	DFS: Depth 7,	IDDFS Stock Check: Depth 7,	IDDFS No Stock Check: Depth 7
-Random Solver,	0,	0,	0,	0,	0,	0
-Heuristic Only Solver,	0,	0,	0,	0,	0,	0
-Search Only: Depth 7,	0,	0,	0,	0,	0,	0
-DFS: Depth 7,	0,	0,	0,	0,	0,	0
-IDDFS Stock Check: Depth 7,	0,	0,	0,	0,	0,	0
-IDDFS No Stock Check: Depth 7,	0,	0,	0,	0,	0,	0
+Random Solver,	25,	15,	10,	10,	15,	10
+Heuristic Only Solver,	5,	15,	10,	10,	10,	10
+Search Only: Depth 7,	15,	25,	30,	20,	5,	20
+DFS: Depth 7,	10,	20,	15,	25,	20,	0
+IDDFS Stock Check: Depth 7,	25,	30,	10,	30,	35,	30
+IDDFS No Stock Check: Depth 7,	10,	20,	15,	0,	20,	25

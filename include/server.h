@@ -21,7 +21,7 @@
 #include "verifier.h"
 
 std::vector<Solver> setSolvers(std::vector<std::string> hFiles);
-void findHeuristicValue(std::vector<Heuristic> heuristics, const rapidjson::Value* obj, HeuristicType type, std::string name);
+void findHeuristicValue(std::vector<Heuristic>* heuristics, const rapidjson::Value* obj, HeuristicType type, std::string name);
 SolverCompare runGames(SolverCompare comp, int deal, int seed, int games, bool verify, Verifier verifier);
 
 #endif

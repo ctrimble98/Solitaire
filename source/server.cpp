@@ -89,108 +89,79 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
             rapidjson::Document document;
             document.ParseStream(isw);
 
-            // if (document.IsArray()) {
-                for (auto &obj: document["solvers"].GetArray()) {
+            for (auto &obj: document["solvers"].GetArray()) {
 
-                    std::string name = obj["name"].GetString();
+                std::string name = obj["name"].GetString();
 
-                    heuristics = std::vector<Heuristic>();
-                    rapidjson::Value::ConstMemberIterator itr = obj.FindMember("heuristics");
-                    if (itr != obj.MemberEnd()) {
-                        findHeuristicValue(heuristics, &itr->value, HeuristicType::FOUNDATION, "FOUNDATION_SCORE");
-                        findHeuristicValue(heuristics, &itr->value, HeuristicType::REVEAL_HIDDEN, "REVEAL_HIDDEN_SCORE");
-                        findHeuristicValue(heuristics, &itr->value, HeuristicType::PLAN_REVEAL_HIDDEN, "PLAN_REVEAL_HIDDEN_SCORE");
-                        findHeuristicValue(heuristics, &itr->value, HeuristicType::EMPTY_SPACE_NO_KING, "EMPTY_SPACE_NO_KING_SCORE");
-                        findHeuristicValue(heuristics, &itr->value, HeuristicType::STOCK_SAFE, "STOCK_SAFE");
-                        findHeuristicValue(heuristics, &itr->value, HeuristicType::TABLEAU, "TABLEAU");
-                        findHeuristicValue(heuristics, &itr->value, HeuristicType::STOCK_DISTANCE, "STOCK_DISTANCE");
-                        findHeuristicValue(heuristics, &itr->value, HeuristicType::SMOOTH, "SMOOTH");
-                    }
-
-                    std::function<int(Solver*, Klondike, std::vector<Move>)> searchFcn = runNoSearch;
-                    std::function<int(Solver*, int)> searchLimitFcn = getDepth;
-                    int searchLimitValue = 0;
-
-                    itr = obj.FindMember("search");
-                    if (itr != obj.MemberEnd()) {
-                        switch (itr->value["search_fcn"].GetInt()) {
-                            case 0:
-                                searchFcn = runSearchIDDFSCheckStock;
-                                break;
-                            case 1:
-                                searchFcn = runSearchIDDFSNoCheckStock;
-                                break;
-                            case 2:
-                                searchFcn = runSearchDFS;
-                                break;
-                        }
-
-                        switch (itr->value["limit_fcn"].GetInt()) {
-                            case 0:
-                                searchLimitFcn = getDepth;
-                                break;
-                            case 1:
-                                searchLimitFcn = getNodes;
-                                break;
-                        }
-                        searchLimitValue = itr->value["limit_value"].GetInt();
-                    }
-
-                    solvers.push_back(Solver(name, heuristics, searchFcn, searchLimitFcn, searchLimitValue));
+                heuristics = std::vector<Heuristic>();
+                rapidjson::Value::ConstMemberIterator itr = obj.FindMember("heuristics");
+                if (itr != obj.MemberEnd()) {
+                    findHeuristicValue(&heuristics, &itr->value, HeuristicType::FOUNDATION, "FOUNDATION");
+                    findHeuristicValue(&heuristics, &itr->value, HeuristicType::REVEAL_HIDDEN, "REVEAL_HIDDEN");
+                    findHeuristicValue(&heuristics, &itr->value, HeuristicType::PLAN_REVEAL_HIDDEN, "PLAN_REVEAL_HIDDEN");
+                    findHeuristicValue(&heuristics, &itr->value, HeuristicType::EMPTY_SPACE_NO_KING, "EMPTY_SPACE_NO_KING");
+                    findHeuristicValue(&heuristics, &itr->value, HeuristicType::STOCK_SAFE, "STOCK_SAFE");
+                    findHeuristicValue(&heuristics, &itr->value, HeuristicType::TABLEAU, "TABLEAU");
+                    findHeuristicValue(&heuristics, &itr->value, HeuristicType::STOCK_DISTANCE, "STOCK_DISTANCE");
+                    findHeuristicValue(&heuristics, &itr->value, HeuristicType::SMOOTH, "SMOOTH");
                 }
-            // }
+
+                std::function<int(Solver*, Klondike, std::vector<Move>)> searchFcn = runNoSearch;
+                std::function<int(Solver*, int)> searchLimitFcn = getDepth;
+                int searchLimitValue = 0;
+
+                itr = obj.FindMember("search");
+                if (itr != obj.MemberEnd()) {
+                    switch (itr->value["search_fcn"].GetInt()) {
+                        case 0:
+                            searchFcn = runSearchIDDFSCheckStock;
+                            break;
+                        case 1:
+                            searchFcn = runSearchIDDFSNoCheckStock;
+                            break;
+                        case 2:
+                            searchFcn = runSearchDFS;
+                            break;
+                    }
+
+                    switch (itr->value["limit_fcn"].GetInt()) {
+                        case 0:
+                            searchLimitFcn = getDepth;
+                            break;
+                        case 1:
+                            searchLimitFcn = getNodes;
+                            break;
+                    }
+                    searchLimitValue = itr->value["limit_value"].GetInt();
+                }
+
+                solvers.push_back(Solver(name, heuristics, searchFcn, searchLimitFcn, searchLimitValue));
+            }
         }
 
         return solvers;
     }
 
-    Heuristic h1 = Heuristic(HeuristicType::FOUNDATION, foundScore);
-    Heuristic h2 = Heuristic(HeuristicType::REVEAL_HIDDEN, revealHiddenScore);
-    Heuristic h3 = Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, planRevealHiddenScore);
-    Heuristic h4 = Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, emptyNoKingScore);
-    Heuristic h5 = Heuristic(HeuristicType::STOCK_SAFE, safeStockScore);
-    Heuristic h6 = Heuristic(HeuristicType::TABLEAU, tableauScore);
-    Heuristic h7 = Heuristic(HeuristicType::STOCK_DISTANCE, stockDistanceScore);
-    Heuristic h8 = Heuristic(HeuristicType::SMOOTH, smoothScore);
-
-    //solvers.push_back(Solver("Random", std::vector<Heuristic>()));
-
-    // heuristics.push_back(h3);
-    // heuristics.push_back(h4);
-    // heuristics.push_back(h1);
-    // heuristics.push_back(h2);
-    // solvers.push_back(Solver("All", heuristics));
-
     heuristics = std::vector<Heuristic>();
-    heuristics.push_back(h1);
-    heuristics.push_back(h2);
-    heuristics.push_back(h3);
-    heuristics.push_back(h4);
-    heuristics.push_back(h5);
-    heuristics.push_back(h6);
-    heuristics.push_back(h7);
-    heuristics.push_back(h8);
+    heuristics.push_back(Heuristic(HeuristicType::FOUNDATION, foundScore));
+    heuristics.push_back(Heuristic(HeuristicType::REVEAL_HIDDEN, revealHiddenScore));
+    heuristics.push_back(Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, planRevealHiddenScore));
+    heuristics.push_back(Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, emptyNoKingScore));
+    heuristics.push_back(Heuristic(HeuristicType::STOCK_SAFE, safeStockScore));
+    heuristics.push_back(Heuristic(HeuristicType::TABLEAU, tableauScore));
+    heuristics.push_back(Heuristic(HeuristicType::STOCK_DISTANCE, stockDistanceScore));
+    heuristics.push_back(Heuristic(HeuristicType::SMOOTH, smoothScore));
 
-    //TODO FIX BETTER SOLUTION
-    // solvers.push_back(Solver("No Stock Check", heuristics, runSearchIDDFSNoCheckStock, getDepth, 6));
-    solvers.push_back(Solver("Random", std::vector<Heuristic>(), runNoSearch, getDepth, 0));
-    solvers.push_back(Solver("Only Heuristics", heuristics, runNoSearch, getDepth, 0));
-    solvers.push_back(Solver("Only Search", std::vector<Heuristic>(), runSearchIDDFSCheckStock, getDepth, 7));
-    solvers.push_back(Solver("No Stock Check 7", heuristics, runSearchIDDFSNoCheckStock, getDepth, 7));
-    solvers.push_back(Solver("Stock Check 7", heuristics, runSearchIDDFSCheckStock, getDepth, 7));
-    solvers.push_back(Solver("DFS Check 7", heuristics, runSearchIDDFSCheckStock, getDepth, 7));
-    // solvers.push_back(Solver("Standard DFS Node Limit 150", heuristics, runSearchDFS, getNodes, 150));
-    // solvers.push_back(Solver("Standard DFS Node Limit 200", heuristics, runSearchDFS, getNodes, 200));
-    // solvers.push_back(Solver("Standard DFS Depth 6", heuristics, runSearchDFS, getDepth, 6));
-    // solvers.push_back(Solver("Standard DFS Depth 8", heuristics, runSearchDFS, getDepth, 8));
+    solvers.push_back(Solver("Random Solver", std::vector<Heuristic>(), runNoSearch, getDepth, 0));
+    solvers.push_back(Solver("IDDFS Stock Check: Depth 8", heuristics, runSearchIDDFSCheckStock, getDepth, 8));
 
     return solvers;
 }
 
-void findHeuristicValue(std::vector<Heuristic> heuristics, const rapidjson::Value* obj, HeuristicType type, std::string name) {
+void findHeuristicValue(std::vector<Heuristic>* heuristics, const rapidjson::Value* obj, HeuristicType type, std::string name) {
     rapidjson::Value::ConstMemberIterator itr = obj->FindMember(name.c_str());
     if (itr != obj->MemberEnd()) {
-        heuristics.push_back(Heuristic(type, itr->value.GetInt()));
+        (*heuristics).push_back(Heuristic(type, itr->value.GetInt()));
     }
 }
 

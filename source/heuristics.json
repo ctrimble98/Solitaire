@@ -7,10 +7,10 @@
             "name": "Heuristic Only Solver",
             "heuristics":
             {
-                "FOUNDATION_SCORE": 0,
-                "REVEAL_HIDDEN_SCORE": 20,
-                "PLAN_REVEAL_HIDDEN_SCORE": 10,
-                "EMPTY_SPACE_NO_KING_SCORE": -10,
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
                 "STOCK_SAFE": 0,
                 "TABLEAU": 0,
                 "STOCK_DISTANCE": 0,
@@ -29,10 +29,10 @@
             "name": "DFS: Depth 7",
             "heuristics":
             {
-                "FOUNDATION_SCORE": 0,
-                "REVEAL_HIDDEN_SCORE": 20,
-                "PLAN_REVEAL_HIDDEN_SCORE": 10,
-                "EMPTY_SPACE_NO_KING_SCORE": -10,
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
                 "STOCK_SAFE": 0,
                 "TABLEAU": 0,
                 "STOCK_DISTANCE": 0,
@@ -48,10 +48,10 @@
             "name": "IDDFS Stock Check: Depth 7",
             "heuristics":
             {
-                "FOUNDATION_SCORE": 0,
-                "REVEAL_HIDDEN_SCORE": 20,
-                "PLAN_REVEAL_HIDDEN_SCORE": 10,
-                "EMPTY_SPACE_NO_KING_SCORE": -10,
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
                 "STOCK_SAFE": 0,
                 "TABLEAU": 0,
                 "STOCK_DISTANCE": 0,
@@ -67,10 +67,10 @@
             "name": "IDDFS No Stock Check: Depth 7",
             "heuristics":
             {
-                "FOUNDATION_SCORE": 0,
-                "REVEAL_HIDDEN_SCORE": 20,
-                "PLAN_REVEAL_HIDDEN_SCORE": 10,
-                "EMPTY_SPACE_NO_KING_SCORE": -10,
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
                 "STOCK_SAFE": 0,
                 "TABLEAU": 0,
                 "STOCK_DISTANCE": 0,
