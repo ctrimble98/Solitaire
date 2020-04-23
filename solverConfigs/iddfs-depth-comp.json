@@ -1,0 +1,61 @@
+{
+    "solvers": [
+        {
+            "name": "IDDFS Stock Check: Depth 5",
+            "heuristics":
+            {
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 0,
+                "limit_fcn": 0,
+                "limit_value": 5
+            }
+        },
+        {
+            "name": "IDDFS Stock Check: Depth 7",
+            "heuristics":
+            {
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 0,
+                "limit_fcn": 0,
+                "limit_value": 7
+            }
+        },
+        {
+            "name": "IDDFS Stock Check: Depth 9",
+            "heuristics":
+            {
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 0,
+                "limit_fcn": 0,
+                "limit_value": 9
+            }
+        }
+    ]
+}
