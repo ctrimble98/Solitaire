@@ -1,0 +1,21 @@
+{
+    "solvers": [
+        {
+            "name": "Random Solver"
+        },
+        {
+            "name": "Heuristic Only",
+            "heuristics":
+            {
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            }
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "solvers": [
+        {
+            "name": "Solver Name",
+            "heuristics":
+            {
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 0,
+                "PLAN_REVEAL_HIDDEN": 0,
+                "EMPTY_SPACE_NO_KING": 0,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 0
+            },
+            "search": {
+                "search_fcn": 0,
+                "limit_fcn": 0,
+                "limit_value": 0
+            }
+        }
+    ]
+}
