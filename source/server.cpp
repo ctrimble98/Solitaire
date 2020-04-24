@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
     comp = runGames(comp, deal, seed, games, checkSolv, verifier);
     auto end = std::chrono::high_resolution_clock::now();
 
-    std::ofstream out("comp.csv");
+    std::ofstream out("./output/output.csv");
     std::streambuf *coutbuf = std::cout.rdbuf();
     std::cout.rdbuf(out.rdbuf());
     std::cout << comp.toString();
@@ -138,22 +138,9 @@ std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
                 solvers.push_back(Solver(name, heuristics, searchFcn, searchLimitFcn, searchLimitValue));
             }
         }
-
-        return solvers;
+    } else {
+        solvers.push_back(Solver("Random Solver", std::vector<Heuristic>(), runNoSearch, getDepth, 0));
     }
-
-    heuristics = std::vector<Heuristic>();
-    heuristics.push_back(Heuristic(HeuristicType::FOUNDATION, foundScore));
-    heuristics.push_back(Heuristic(HeuristicType::REVEAL_HIDDEN, revealHiddenScore));
-    heuristics.push_back(Heuristic(HeuristicType::PLAN_REVEAL_HIDDEN, planRevealHiddenScore));
-    heuristics.push_back(Heuristic(HeuristicType::EMPTY_SPACE_NO_KING, emptyNoKingScore));
-    heuristics.push_back(Heuristic(HeuristicType::STOCK_SAFE, safeStockScore));
-    heuristics.push_back(Heuristic(HeuristicType::TABLEAU, tableauScore));
-    heuristics.push_back(Heuristic(HeuristicType::STOCK_DISTANCE, stockDistanceScore));
-    heuristics.push_back(Heuristic(HeuristicType::SMOOTH, smoothScore));
-
-    solvers.push_back(Solver("Random Solver", std::vector<Heuristic>(), runNoSearch, getDepth, 0));
-    solvers.push_back(Solver("IDDFS Stock Check: Depth 8", heuristics, runSearchIDDFSCheckStock, getDepth, 8));
 
     return solvers;
 }

@@ -1,0 +1,68 @@
+Different depths of IDDFS, 100, Testing with advanced stock check 
+Running solvers with 3 deal klondike on 100 games with seed 1585839760
+100 games played
+,       Stock Check 5,  Stock Check 6,  Stock Check 7
+Stock Check 5,  13,     3,      1
+Stock Check 6,  1,      11,     0
+Stock Check 7,  3,      4,      15
+(62554081ms total time)
+
+DFS Depth 8, 100, 
+Running solvers with 3 deal klondike on 100 games with seed 1585715836
+100 games played
+,       Standard DFS Depth 8
+Standard DFS Depth 8,   12
+(101667044ms total time)
+
+
+Running solvers with 3 deal klondike on 40 games with seed 1585617635
+40 games played
+,       Stock Check,    Stock Check,    Stock Check
+Stock Check,    27.5,   2.5,    2.5
+Stock Check,    0,      25,     0
+Stock Check,    2.5,    2.5,    27.5
+(53917034ms total time)
+
+
+Running solvers with 3 deal klondike on 100 games with seed 1585714544
+100 games played
+,       Standard DFS Depth 8
+Standard DFS Depth 8,   3
+(115998680ms total time)
+
+
+Running solvers with 3 deal klondike on 40 games with seed 1585658771
+40 games played
+,       Standard DFS Node Limit 150,    Standard DFS Node Limit 200,    Standard DFS Depth 6,   Standard DFS Depth 7
+Standard DFS Node Limit 150,    10,     0,      0,      0
+Standard DFS Node Limit 200,    0,      10,     0,      0
+Standard DFS Depth 6,   0,      0,      10,     0
+Standard DFS Depth 7,   0,      0,      0,      10
+(12727951ms total time)
+
+Running solvers with 3 deal klondike on 40 games with seed 1585650586
+40 games played
+,       Standard DFS Node Limit 150,    Standard DFS Node Limit 200,    Standard DFS Depth 6,   Standard DFS Depth 7
+Standard DFS Node Limit 150,    2.5,    0,      0,      0
+Standard DFS Node Limit 200,    0,      2.5,    0,      0
+Standard DFS Depth 6,   2.5,    2.5,    5,      0
+Standard DFS Depth 7,   2.5,    2.5,    0,      5
+(4803346ms total time)
+
+
+Running solvers with 3 deal klondike on 40 games with seed 1585573263
+40 games played
+,       Stock Check,    Stock Check,    Stock Check,    Stock Check
+Stock Check,    17.5,   2.5,    0,      0
+Stock Check,    0,      15,     0,      0
+Stock Check,    0,      2.5,    17.5,   0
+Stock Check,    0,      2.5,    0,      17.5
+(71342712ms total time)
+
+
+Running solvers with 3 deal klondike on 100 games with seed 1586484086
+100 games played
+,       Stock Check 6,  Stock Check 7
+Stock Check 6,  15,     1
+Stock Check 7,  2,      16
+(100867251ms total time)
