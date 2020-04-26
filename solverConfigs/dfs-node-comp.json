@@ -1,0 +1,61 @@
+{
+    "solvers": [
+        {
+            "name": "DFS: Nodes 2000",
+            "heuristics":
+            {
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 2,
+                "limit_fcn": 1,
+                "limit_value": 2000
+            }
+        },
+        {
+            "name": "DFS: Nodes 3500",
+            "heuristics":
+            {
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 2,
+                "limit_fcn": 1,
+                "limit_value": 3500
+            }
+        },
+        {
+            "name": "DFS: Nodes 5000",
+            "heuristics":
+            {
+                "FOUNDATION": 0,
+                "REVEAL_HIDDEN": 20,
+                "PLAN_REVEAL_HIDDEN": 10,
+                "EMPTY_SPACE_NO_KING": -10,
+                "STOCK_SAFE": 0,
+                "TABLEAU": 0,
+                "STOCK_DISTANCE": 0,
+                "SMOOTH": 1
+            },
+            "search": {
+                "search_fcn": 2,
+                "limit_fcn": 1,
+                "limit_value": 5000
+            }
+        }
+    ]
+}

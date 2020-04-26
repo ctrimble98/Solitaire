@@ -65,15 +65,6 @@ int main(int argc, char *argv[]) {
 
 std::vector<Solver> setSolvers(std::vector<std::string> hFiles) {
 
-    int foundScore = FOUNDATION_SCORE;
-    int revealHiddenScore = REVEAL_HIDDEN_SCORE;
-    int planRevealHiddenScore = PLAN_REVEAL_HIDDEN_SCORE;
-    int emptyNoKingScore = EMPTY_SPACE_NO_KING_SCORE;
-    int safeStockScore = STOCK_SAFE_SCORE;
-    int tableauScore = TABLEAU_SCORE;
-    int stockDistanceScore = STOCK_DISTANCE_SCORE;
-    int smoothScore = SMOOTH_SCORE;
-
     std::vector<Solver> solvers;
     std::vector<Heuristic> heuristics;
 
