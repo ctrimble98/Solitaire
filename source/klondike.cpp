@@ -326,12 +326,12 @@ bool Klondike::evalMove(Card dest, Card pot) {
 }
 
 bool Klondike::makeMove(int moveIndex, bool findNextMoves /*=true*/) {
-    if (moveIndex < 0 || moveIndex > availableMoves.size() + extraMoves.size()) {
+    if (moveIndex < 0 || moveIndex > static_cast<int>(availableMoves.size() + extraMoves.size())) {
         std::cout << "Invalid move Index" << '\n';
         return false;
     }
 
-    Move move = moveIndex < availableMoves.size() ? availableMoves[moveIndex] : extraMoves[moveIndex - availableMoves.size()];
+    Move move = moveIndex < static_cast<int>(availableMoves.size()) ? availableMoves[moveIndex] : extraMoves[moveIndex - availableMoves.size()];
 
     std::vector<Card> cardsToMove;
     switch (move.getStart()[0]) {
@@ -339,14 +339,6 @@ bool Klondike::makeMove(int moveIndex, bool findNextMoves /*=true*/) {
             int stockIndex = move.getStart()[2];
             cardsToMove.push_back(stock[stockIndex]);
             stock.erase(stock.begin() + stockIndex);
-            // if (stockIndex > 0) {
-            //     stockPointer = stockIndex - 1;
-            // } else if (stock.size() >= (unsigned)deal) {
-            //     stockPointer = deal - 1;
-            // } else {
-            //     stockPointer = stock.size() - 1;
-            // }
-            //TODO CHECK THIS WORKS
             stockPointer = stock.size() > 0 ? (stockIndex - 1) % stock.size() : 0;
             break;
         }
@@ -415,7 +407,7 @@ std::vector<int> Klondike::getAvailableStock(int stockPointer) {
         }
     }
 
-    for (size_t i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
         if (occurences[i] == true) {
             availableCards.push_back(i);
         }

@@ -1,5 +1,4 @@
-250 games played
-,	DFS: Nodes 2000,	DFS: Nodes 3500,	DFS: Nodes 5000
-DFS: Nodes 2000,	10.4,	0.4,	0
-DFS: Nodes 3500,	0.4,	10.4,	0
-DFS: Nodes 5000,	0.8,	0.8,	11.2
+1000 games played
+,	Random Solver,	0/3/0/1/1
+Random Solver,	10,	5.4
+0/3/0/1/1,	8.8,	13.4

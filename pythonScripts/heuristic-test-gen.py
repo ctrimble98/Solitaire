@@ -18,7 +18,7 @@ for i in range(-1, 3):
                             "EMPTY_SPACE_NO_KING": -10,
                             "STOCK_SAFE": 5*j,
                             "TABLEAU": 5*k,
-                            "STOCK_DISTANCE": 1*l,
+                            "STOCK_DISTANCE": l,
                             "SMOOTH": m
                         }
                     })

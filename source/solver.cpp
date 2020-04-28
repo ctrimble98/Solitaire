@@ -62,7 +62,7 @@ bool Solver::run(Klondike game, int seed, bool verbose) {
         }
 
         bool madeMove = false;
-        for (int i = 0; i < moves.size(); i++) {
+        for (size_t i = 0; i < moves.size(); i++) {
             if (checkSafeMove(game, moves[i])) {
                 chosenMove = i;
                 madeMove = true;
@@ -70,7 +70,7 @@ bool Solver::run(Klondike game, int seed, bool verbose) {
             }
         }
         if (!madeMove) {
-            for (int i = 0; i < moves.size(); i++) {
+            for (size_t i = 0; i < moves.size(); i++) {
                 Move move = moves[i];
                 if ((move.getStart()[0] == static_cast<int>(CardLocation::TABLEAU) && move.getStart()[2] > 0 && game.getTableau()[move.getStart()[1]][move.getStart()[2] - 1].isFaceDown())) {
                     chosenMove = i;
@@ -93,7 +93,7 @@ bool Solver::run(Klondike game, int seed, bool verbose) {
             std::vector<int> bestMoves(moves.size());
             std::iota(bestMoves.begin(), bestMoves.end(), 0);
             int bestScore = MIN_SCORE + 1;
-            for (int i = 0; i < moves.size(); i++) {
+            for (size_t i = 0; i < moves.size(); i++) {
                 int score = 0;
                 for (auto &h: heuristics) {
                     score += h.run(game, moves[i]);
@@ -131,7 +131,7 @@ int runSearchIDDFSCheckStock(Solver* solver, Klondike game, std::vector<Move> mo
     int bestScore = -1;
     int chosenMove = -1;
     for (int i = 0; i < solver->getLimit(); i++) {
-        for (int j = 0; j < moves.size(); j++) {
+        for (size_t j = 0; j < moves.size(); j++) {
             Klondike temp = Klondike(game);
             temp.makeMove(j);
             int score = dfs(solver, temp, moves[j], 0, i, false, 0);
@@ -198,7 +198,7 @@ int dfs(Solver* solver, Klondike game, Move move, int depth, int maxDepth, bool 
 
     if (checkLimit(solver->getSearchValueFcn()(solver, depth), solver->getLimit())) {
         int score = -1;
-        for (int i = 0; i < moves.size(); i++) {
+        for (size_t i = 0; i < moves.size(); i++) {
             int moveScore = 0;
 
             int modifier = moves[i].getStart()[0] == static_cast<int>(CardLocation::STOCK) ? -1*(game.getStock().size() - 1 - moves[i].getStart()[2]) : 0;

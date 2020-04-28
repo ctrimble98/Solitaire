@@ -12,10 +12,10 @@ OBJ_FILES	=	$(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.cpp	$(INC_FILES)
 	$(CC)	-c	-o	$@	$<	-I $(INC_DIR)	$(FLAGS)
 
-server:	$(OBJ_FILES)
+klondikeSolver:	$(OBJ_FILES)
 	$(CC)	-o $@	$^	$(FLAGS)
 
-all:	server
+all:	klondikeSolver
 
 clean:
-	rm	-f	$(OBJ_DIR)/*.o server
+	rm	-f	$(OBJ_DIR)/*.o klondikeSolver

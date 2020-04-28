@@ -11,19 +11,15 @@ Card::Card(int value) {
 
     switch (value / CARDS_PER_SUIT) {
         case 0:
-            // Card(Suit::HEARTS, value % 13);
             m_suit = Suit::HEARTS;
             break;
         case 1:
-            // Card(Suit::DIAMONDS, value % 13);
             m_suit = Suit::DIAMONDS;
             break;
         case 2:
-            // Card(Suit::SPADES, value % 13);
             m_suit = Suit::SPADES;
             break;
         case 3:
-            // Card(Suit::CLUBS, value % 13);
             m_suit = Suit::CLUBS;
             break;
     }

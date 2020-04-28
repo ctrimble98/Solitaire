@@ -1,9 +1,0 @@
-Solver, Games Played, Games Won, Win Percentage, Lower 95%, Upper 95%
-Me Playing, 90, 29, 32.2222, 23.4668, 42.4332
-Random Solver, 1000000, 104701, 10.4701, 10.4102, 10.5303
-Heuristics Only, 1000000, 126729, 12.6729, 12.6078, 12.7382
-IDDFS Only: Max Depth 7, 60, 10
-IDDFS Stock Check: Max Depth 6, 220, 52, 23.6364, 18.5049, 29.6728
-IDDFS Stock Check: Max Depth 7, 280, 64 ,
-IDDFS No Stock Check: Max Depth 7, 60, 8
-DFS: Max Depth 7, 60, 8
